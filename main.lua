@@ -1,16 +1,17 @@
--- MASTXR HUB - Ultimate Player Enhancements GUI (Fixed Version)
+-- MASTXR HUB - Ultimate Player Enhancements GUI (Updated Version)
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 local hrp = char:WaitForChild("HumanoidRootPart")
 local humanoid = char:WaitForChild("Humanoid")
 local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 -- Feature States
 local sprintEnabled = false
 local sprintSpeed = 50
 local infiniteJumpEnabled = false
-local dioffEnabled = false
+local dioffEnabled = false -- now will handle invisibility
 
 -- GUI Main
 GUI:CreateMain({
@@ -84,14 +85,35 @@ GUI:CreateToggle({
     end
 })
 
--- Dioff Option (currently placeholder)
+-- Dioff Mode (Invisible)
 GUI:CreateToggle({
     parent = movementSection,
-    text = "Dioff Mode",
+    text = "Dioff Mode (Invisible)",
     default = false,
     callback = function(state)
         dioffEnabled = state
-        notify("Dioff", state and "Enabled" or "Disabled")
+        if dioffEnabled then
+            -- Make all character parts invisible
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") or part:IsA("Decal") then
+                    part.Transparency = 1
+                    if part:IsA("Decal") then part.Transparency = 1 end
+                elseif part:IsA("Accessory") and part:FindFirstChild("Handle") then
+                    part.Handle.Transparency = 1
+                end
+            end
+        else
+            -- Restore visibility
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") or part:IsA("Decal") then
+                    part.Transparency = 0
+                    if part:IsA("Decal") then part.Transparency = 0 end
+                elseif part:IsA("Accessory") and part:FindFirstChild("Handle") then
+                    part.Handle.Transparency = 0
+                end
+            end
+        end
+        notify("Dioff Mode", state and "Invisible Enabled" or "Invisible Disabled")
     end
 })
 
@@ -124,7 +146,15 @@ end })
 
 GUI:CreateButton({ parent = resetSection, text = "Reset Dioff", callback = function()
     dioffEnabled = false
-    notify("Dioff", "Reset")
+    -- Restore visibility
+    for _, part in pairs(char:GetDescendants()) do
+        if part:IsA("BasePart") or part:IsA("Decal") then
+            part.Transparency = 0
+        elseif part:IsA("Accessory") and part:FindFirstChild("Handle") then
+            part.Handle.Transparency = 0
+        end
+    end
+    notify("Dioff Mode", "Reset (Visible)")
 end })
 
 -- =========================
@@ -167,16 +197,12 @@ GUI:CreateColorPicker({
 })
 
 -- =========================
--- CREDITS TAB
+-- CREDITS TAB (Improved Layout)
 -- =========================
 local creditsTab = GUI:CreateTab("Credits", "info")
-local mainCreditsSection = GUI:CreateSection({ parent = creditsTab, text = "MASTXR HUB - Credits" })
+local creditsSection = GUI:CreateSection({ parent = creditsTab, text = "MASTXR HUB Credits" })
 
-local creatorSection = GUI:CreateSection({ parent = creditsTab, text = "Creator" })
-GUI:CreateLabel({ parent = creatorSection, text = "Name:", description = "Sweb" })
-
-local contactSection = GUI:CreateSection({ parent = creditsTab, text = "Contact" })
-GUI:CreateLabel({ parent = contactSection, text = "Discord:", description = "@4503" })
-
-local librarySection = GUI:CreateSection({ parent = creditsTab, text = "GUI Library" })
-GUI:CreateLabel({ parent = librarySection, text = "Library Used:", description = "Ash-Libs" })
+GUI:CreateLabel({ parent = creditsSection, text = "Creator", description = "Sweb" })
+GUI:CreateLabel({ parent = creditsSection, text = "Discord", description = "@4503" })
+GUI:CreateLabel({ parent = creditsSection, text = "Library Used", description = "Ash-Libs" })
+GUI:CreateLabel({ parent = creditsSection, text = "Version", description = "1.0 (Updated with Dioff Mode)" })
