@@ -1,20 +1,34 @@
--- ===== MASTXR HUB - All-in-One GUI with Simple Key System =====
-
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 
--- Localization
 WindUI:Localization({
     Enabled = true,
     Prefix = "loc:",
     DefaultLanguage = "en",
     Translations = {
+        --[[["ru"] = {
+            ["WINDUI_EXAMPLE"] = "WindUI ÃƒÂÃ…Â¸Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â¼ÃƒÂÃ‚ÂµÃƒâ€˜Ã¢â€šÂ¬",
+            ["WELCOME"] = "ÃƒÂÃ¢â‚¬ÂÃƒÂÃ‚Â¾ÃƒÂÃ‚Â±Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â¾ ÃƒÂÃ‚Â¿ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â¶ÃƒÂÃ‚Â°ÃƒÂÃ‚Â»ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â²ÃƒÂÃ‚Â°Ãƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã…â€™ ÃƒÂÃ‚Â² WindUI!",
+            ["LIB_DESC"] = "ÃƒÂÃ¢â‚¬ËœÃƒÂÃ‚Â¸ÃƒÂÃ‚Â±ÃƒÂÃ‚Â»ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â¾Ãƒâ€˜Ã¢â‚¬Å¡ÃƒÂÃ‚ÂµÃƒÂÃ‚ÂºÃƒÂÃ‚Â° ÃƒÂÃ‚Â´ÃƒÂÃ‚Â»Ãƒâ€˜Ã‚Â Ãƒâ€˜Ã‚ÂÃƒÂÃ‚Â¾ÃƒÂÃ‚Â·ÃƒÂÃ‚Â´ÃƒÂÃ‚Â°ÃƒÂÃ‚Â½ÃƒÂÃ‚Â¸Ãƒâ€˜Ã‚Â ÃƒÂÃ‚ÂºÃƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â°Ãƒâ€˜Ã‚ÂÃƒÂÃ‚Â¸ÃƒÂÃ‚Â²Ãƒâ€˜Ã¢â‚¬Â¹Ãƒâ€˜Ã¢â‚¬Â¦ ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â½Ãƒâ€˜Ã¢â‚¬Å¡ÃƒÂÃ‚ÂµÃƒâ€˜Ã¢â€šÂ¬Ãƒâ€˜Ã¢â‚¬Å¾ÃƒÂÃ‚ÂµÃƒÂÃ‚Â¹Ãƒâ€˜Ã‚ÂÃƒÂÃ‚Â¾ÃƒÂÃ‚Â²",
+            ["SETTINGS"] = "ÃƒÂÃ‚ÂÃƒÂÃ‚Â°Ãƒâ€˜Ã‚ÂÃƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â¹ÃƒÂÃ‚ÂºÃƒÂÃ‚Â¸",
+            ["APPEARANCE"] = "ÃƒÂÃ¢â‚¬â„¢ÃƒÂÃ‚Â½ÃƒÂÃ‚ÂµÃƒâ€˜Ã‹â€ ÃƒÂÃ‚Â½ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â¹ ÃƒÂÃ‚Â²ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â´",
+            ["FEATURES"] = "ÃƒÂÃ‚Â¤Ãƒâ€˜Ã†â€™ÃƒÂÃ‚Â½ÃƒÂÃ‚ÂºÃƒâ€˜Ã¢â‚¬Â ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â½ÃƒÂÃ‚Â°ÃƒÂÃ‚Â»",
+            ["UTILITIES"] = "ÃƒÂÃ‹Å“ÃƒÂÃ‚Â½Ãƒâ€˜Ã‚ÂÃƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã¢â€šÂ¬Ãƒâ€˜Ã†â€™ÃƒÂÃ‚Â¼ÃƒÂÃ‚ÂµÃƒÂÃ‚Â½Ãƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã¢â‚¬Â¹",
+            ["UI_ELEMENTS"] = "UI ÃƒÂÃ‚Â­ÃƒÂÃ‚Â»ÃƒÂÃ‚ÂµÃƒÂÃ‚Â¼ÃƒÂÃ‚ÂµÃƒÂÃ‚Â½Ãƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã¢â‚¬Â¹",
+            ["CONFIGURATION"] = "ÃƒÂÃ…Â¡ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â½Ãƒâ€˜Ã¢â‚¬Å¾ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â³Ãƒâ€˜Ã†â€™Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â°Ãƒâ€˜Ã¢â‚¬Â ÃƒÂÃ‚Â¸Ãƒâ€˜Ã‚Â",
+            ["SAVE_CONFIG"] = "ÃƒÂÃ‚Â¡ÃƒÂÃ‚Â¾Ãƒâ€˜Ã¢â‚¬Â¦Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â°ÃƒÂÃ‚Â½ÃƒÂÃ‚Â¸Ãƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã…â€™ ÃƒÂÃ‚ÂºÃƒÂÃ‚Â¾ÃƒÂÃ‚Â½Ãƒâ€˜Ã¢â‚¬Å¾ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â³Ãƒâ€˜Ã†â€™Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â°Ãƒâ€˜Ã¢â‚¬Â ÃƒÂÃ‚Â¸Ãƒâ€˜Ã…Â½",
+            ["LOAD_CONFIG"] = "ÃƒÂÃ¢â‚¬â€ÃƒÂÃ‚Â°ÃƒÂÃ‚Â³Ãƒâ€˜Ã¢â€šÂ¬Ãƒâ€˜Ã†â€™ÃƒÂÃ‚Â·ÃƒÂÃ‚Â¸Ãƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã…â€™ ÃƒÂÃ‚ÂºÃƒÂÃ‚Â¾ÃƒÂÃ‚Â½Ãƒâ€˜Ã¢â‚¬Å¾ÃƒÂÃ‚Â¸ÃƒÂÃ‚Â³Ãƒâ€˜Ã†â€™Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â°Ãƒâ€˜Ã¢â‚¬Â ÃƒÂÃ‚Â¸Ãƒâ€˜Ã…Â½",
+            ["THEME_SELECT"] = "ÃƒÂÃ¢â‚¬â„¢Ãƒâ€˜Ã¢â‚¬Â¹ÃƒÂÃ‚Â±ÃƒÂÃ‚ÂµÃƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â¸Ãƒâ€˜Ã¢â‚¬Å¡ÃƒÂÃ‚Âµ Ãƒâ€˜Ã¢â‚¬Å¡ÃƒÂÃ‚ÂµÃƒÂÃ‚Â¼Ãƒâ€˜Ã†â€™",
+            ["TRANSPARENCY"] = "ÃƒÂÃ…Â¸Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â·Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â°Ãƒâ€˜Ã¢â‚¬Â¡ÃƒÂÃ‚Â½ÃƒÂÃ‚Â¾Ãƒâ€˜Ã‚ÂÃƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã…â€™ ÃƒÂÃ‚Â¾ÃƒÂÃ‚ÂºÃƒÂÃ‚Â½ÃƒÂÃ‚Â°"
+        },--]]
         ["en"] = {
-            ["WELCOME"] = "Welcome to MASTXR!",
-            ["FEATURES"] = "Features",
+            ["WINDUI_EXAMPLE"] = "WindUI Example",
+            ["WELCOME"] = "Welcome to WindUI!",
+            ["LIB_DESC"] = "Beautiful UI library for Roblox",
             ["SETTINGS"] = "Settings",
+            ["APPEARANCE"] = "Appearance",
+            ["FEATURES"] = "Features",
             ["UTILITIES"] = "Utilities",
             ["UI_ELEMENTS"] = "UI Elements",
-            ["APPEARANCE"] = "Appearance",
             ["CONFIGURATION"] = "Configuration",
             ["SAVE_CONFIG"] = "Save Configuration",
             ["LOAD_CONFIG"] = "Load Configuration",
@@ -27,7 +41,6 @@ WindUI:Localization({
 WindUI.TransparencyValue = 0.2
 WindUI:SetTheme("Dark")
 
--- Gradient helper for notifications
 local function gradient(text, startColor, endColor)
     local result = ""
     for i = 1, #text do
@@ -40,11 +53,10 @@ local function gradient(text, startColor, endColor)
     return result
 end
 
--- Popup on load
 WindUI:Popup({
-    Title = gradient("MASTXR Hub", Color3.fromHex("#6A11CB"), Color3.fromHex("#2575FC")),
+    Title = gradient("WindUI Demo", Color3.fromHex("#6A11CB"), Color3.fromHex("#2575FC")),
     Icon = "sparkles",
-    Content = "Welcome to MASTXR Hub!",
+    Content = "loc:LIB_DESC",
     Buttons = {
         {
             Title = "Get Started",
@@ -55,88 +67,178 @@ WindUI:Popup({
     }
 })
 
--- ===== Create Main Window =====
+
+-- ===== MASTXR Key System Service =====
+WindUI.Services.MASTXRKeyService = {
+    Name = "MASTXR Key System",
+    Icon = "key", -- lucide icon or use rbxassetid
+    
+    Args = { "ServiceId" }, -- important: service arguments
+    New = function(ServiceId)
+        
+        -- function to validate a key
+        function validateKey(key)
+            local validKeys = {
+                "MASTXR-123",
+                "MASTXR-999",
+                "MASTXR-2025" -- add more keys here
+            }
+            
+            if not key then
+                return false, "No key provided!"
+            end
+            
+            for _, v in pairs(validKeys) do
+                if key == v then
+                    return true, "Key is valid!"
+                end
+            end
+            
+            return false, "Key is invalid!"
+        end
+        
+        -- function to copy the link to the key system (optional)
+        function copyLink()
+            return setclipboard("https://github.com/Footagesus/WindUI") -- link to key info or service
+        end
+        
+        -- return the Verify and Copy functions to WindUI
+        return {
+            Verify = validateKey, -- verifies key
+            Copy = copyLink       -- copies service link
+        }
+    end
+}
+]]
+
 local Window = WindUI:CreateWindow({
-    Title = "MASTXR HUB",
+    Title = "loc:WINDUI_EXAMPLE",
     Icon = "geist:window",
-    Author = "MASTXR Team",
-    Folder = "MASTXR_HUB",
+    Author = "loc:WELCOME",
+    Folder = "WindUI_Example",
     Size = UDim2.fromOffset(580, 490),
     Theme = "Dark",
-    User = { Enabled = true, Anonymous = true },
+    -- Background = WindUI:Gradient({
+    --     ["0"] = { Color = Color3.fromHex("#0f0c29"), Transparency = 1 },
+    --     ["100"] = { Color = Color3.fromHex("#302b63"), Transparency = 0.9 },
+    -- }, {
+    --     Rotation = 45,
+    -- }),
+    --Background = "video:https://cdn.discordapp.com/attachments/1337368451865645096/1402703845657673878/VID_20250616_180732_158.webm?ex=68958a01&is=68943881&hm=164c5b04d1076308b38055075f7eb0653c1d73bec9bcee08e918a31321fe3058&",
+    User = {
+        Enabled = true,
+        Anonymous = true,
+        Callback = function()
+            WindUI:Notify({
+                Title = "User Profile",
+                Content = "User profile clicked!",
+                Duration = 3
+            })
+        end
+    },
     Acrylic = true,
     HideSearchBar = false,
-    SideBarWidth = 200
+    SideBarWidth = 200,
+    -- KeySystem = { -- <- ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“ remove this all, if you dont neet the key system
+    --     -- Key = { "1234", "5678" },  
+    --     Note = "Example Key System. With platoboost, etc.",
+    --     -- URL = "https://github.com/Footagesus/WindUI",
+    --     -- Thumbnail = {
+    --     --     Image = "rbxassetid://",
+    --     --     Title = "Thumbnail",
+    --     -- },
+    --     API = {
+    --         {   
+    --             -- Title = "Platoboost", -- optional 
+    --             -- Desc = "Click to copy.", -- optional
+    --             -- Icon = "rbxassetid://", -- optional
+    
+    --             Type = "platoboost", -- type: platoboost, ...
+    --             ServiceId = 5541, -- service id
+    --             Secret = "1eda3b70-aab4-4394-82e4-4e7f507ae198", -- platoboost secret
+    --         },
+    --         {   
+    --             -- Title = "Other service", -- optional 
+    --             -- Desc = nil, -- optional
+    --             -- Icon = "rbxassetid://", -- optional
+    
+    --             Type = "pandadevelopment", -- type: platoboost, ...
+    --             ServiceId = "windui", -- service id
+    --         },
+    --         {   
+    --             Type = "luarmor",
+    --             ScriptId = "...",
+    --             Discord = "https://discord.com/invite/...",
+    --         },
+    --         { -- Custom service ( ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬ËœÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Ëœ look at line 73 ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬ËœÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Ëœ )
+    --             Type = "mysuperservicetogetkey",
+    --             ServiceId = 42,
+    --         }
+    --     },
+    --     SaveKey = true,
+    -- },
+    -- KeySystem = {
+    --     Key = { "pisun" },
+    --     Thumbnail = {
+    --         Image = "rbxassetid://88271032881974",
+    --         Width = 180, -- default 200
+    --     }
+    -- }
 })
 
--- ===== Key System (Simple local version) =====
-local unlocked = false
-local validKeys = { "MASTXR-123", "MASTXR-999" }
 
-local function isKeyValid(key)
-    for i, k in pairs(validKeys) do
-        if key == k then
-            return true
-        end
-    end
-    return false
-end
+-- OPTIONAL   >:(
 
-local function askForKey()
-    Window:Dialog({
-        Title = "Enter MASTXR Key",
-        Content = "Type your key to unlock the hub",
-        Inputs = {
-            { Placeholder = "XXXX-XXXX-XXXX", Default = "" }
-        },
-        Buttons = {
-            {
-                Title = "Verify",
-                Variant = "Primary",
-                Callback = function(inputs)
-                    local keyInput = inputs[1]
-                    if isKeyValid(keyInput) then
-                        unlocked = true
-                        WindUI:Notify({
-                            Title = "Key Accepted",
-                            Content = "MASTXR is unlocked!",
-                            Icon = "check",
-                            Duration = 3
-                        })
-                        return true
-                    else
-                        WindUI:Notify({
-                            Title = "Invalid Key",
-                            Content = "Try again!",
-                            Icon = "x",
-                            Duration = 3
-                        })
-                        return false
-                    end
-                end
-            }
-        }
+Window:Tag({
+    Title = "v1.6.4",
+    Color = Color3.fromHex("#30ff6a")
+})
+Window:Tag({
+    Title = "Beta",
+    Color = Color3.fromHex("#315dff")
+})
+local TimeTag = Window:Tag({
+    Title = "--:--",
+    Radius = 0,
+    --Color = Color3.fromHex("#000000"),
+    Color = WindUI:Gradient({
+        ["0"]   = { Color = Color3.fromHex("#FF0F7B"), Transparency = 0 },
+        ["100"] = { Color = Color3.fromHex("#F89B29"), Transparency = 0 },
+    }, {
+        Rotation = 45,
+    }),
+})
+
+
+local hue = 0
+
+-- Rainbow effect & Time 
+task.spawn(function()
+	while true do
+		local now = os.date("*t")
+		local hours = string.format("%02d", now.hour)
+		local minutes = string.format("%02d", now.min)
+		
+		hue = (hue + 0.01) % 1
+		local color = Color3.fromHSV(hue, 1, 1)
+		
+		TimeTag:SetTitle(hours .. ":" .. minutes)
+		--TimeTag:SetColor(color)
+
+		task.wait(0.06)
+	end
+end)
+
+
+Window:CreateTopbarButton("theme-switcher", "moon", function()
+    WindUI:SetTheme(WindUI:GetCurrentTheme() == "Dark" and "Light" or "Dark")
+    WindUI:Notify({
+        Title = "Theme Changed",
+        Content = "Current theme: "..WindUI:GetCurrentTheme(),
+        Duration = 2
     })
-end
+end, 990)
 
-askForKey()
-
--- Helper to lock features until key is unlocked
-local function requireUnlock(callback)
-    return function(...)
-        if not unlocked then
-            WindUI:Notify({
-                Title = "Locked",
-                Content = "Enter a valid key first",
-                Duration = 2
-            })
-            return
-        end
-        return callback(...)
-    end
-end
-
--- ===== Tabs and Sections =====
 local Tabs = {
     Main = Window:Section({ Title = "loc:FEATURES", Opened = true }),
     Settings = Window:Section({ Title = "loc:SETTINGS", Opened = true }),
@@ -144,89 +246,101 @@ local Tabs = {
 }
 
 local TabHandles = {
-    Elements = Tabs.Main:Tab({ Title = "loc:UI_ELEMENTS", Icon = "layout-grid" }),
+    Elements = Tabs.Main:Tab({ Title = "loc:UI_ELEMENTS", Icon = "layout-grid", Desc = "UI Elements Example" }),
     Appearance = Tabs.Settings:Tab({ Title = "loc:APPEARANCE", Icon = "brush" }),
     Config = Tabs.Utilities:Tab({ Title = "loc:CONFIGURATION", Icon = "settings" })
 }
 
--- ===== Elements Section =====
 TabHandles.Elements:Paragraph({
     Title = "Interactive Components",
-    Desc = "Explore MASTXR's powerful elements",
+    Desc = "Explore WindUI's powerful elements",
     Image = "component",
     ImageSize = 20,
-    Color = Color3.fromHex("#30ff6a")
+    Color = Color3.fromHex("#30ff6a"),
 })
+
+TabHandles.Elements:Divider()
 
 local ElementsSection = TabHandles.Elements:Section({
     Title = "Section Example",
-    Icon = "bird"
+    Icon = "bird",
 })
 
+local toggleState = false
 local featureToggle = ElementsSection:Toggle({
     Title = "Enable Features",
+    --Desc = "Unlocks additional functionality",
     Value = false,
-    Callback = requireUnlock(function(state)
+    Callback = function(state) 
+        toggleState = state
         WindUI:Notify({
             Title = "Features",
             Content = state and "Features Enabled" or "Features Disabled",
             Icon = state and "check" or "x",
             Duration = 2
         })
-    end)
+    end
 })
 
 local intensitySlider = ElementsSection:Slider({
     Title = "Effect Intensity",
+    Desc = "Adjust the effect strength",
     Value = { Min = 0, Max = 100, Default = 50 },
-    Callback = requireUnlock(function(value)
+    Callback = function(value)
         print("Intensity set to:", value)
-    end)
+    end
 })
 
 local modeDropdown = ElementsSection:Dropdown({
     Title = "Select Mode",
     Values = { "Standard", "Advanced", "Expert" },
     Value = "Standard",
-    Callback = requireUnlock(function(option)
+    Callback = function(option)
         WindUI:Notify({
             Title = "Mode Changed",
             Content = "Selected: "..option,
             Duration = 2
         })
-    end)
+    end
 })
 
+ElementsSection:Divider()
+
 ElementsSection:Button({
-    Title = "Secret Feature",
-    Icon = "shield",
-    Callback = requireUnlock(function()
-        WindUI:Notify({ Title = "Secret Feature", Content = "You used it!", Duration = 2 })
-    end)
+    Title = "Show Notification",
+    Icon = "bell",
+    Callback = function()
+        WindUI:Notify({
+            Title = "Hello WindUI!",
+            Content = "This is a sample notification",
+            Icon = "bell",
+            Duration = 3
+        })
+    end
 })
 
 ElementsSection:Colorpicker({
     Title = "Select Color",
+    --Desc = "Select coloe",
     Default = Color3.fromHex("#30ff6a"),
-    Transparency = 0,
-    Callback = requireUnlock(function(color, transparency)
+    Transparency = 0, -- enable transparency
+    Callback = function(color, transparency)
         WindUI:Notify({
             Title = "Color Changed",
             Content = "New color: "..color:ToHex().."\nTransparency: "..transparency,
             Duration = 2
         })
-    end)
+    end
 })
 
 ElementsSection:Code({
     Title = "my_code.luau",
     Code = [[print("Hello world!")]],
-    OnCopy = requireUnlock(function()
+    OnCopy = function()
         print("Copied to clipboard!")
-    end)
+    end
 })
 
--- ===== Appearance Section =====
 TabHandles.Appearance:Paragraph({
     Title = "Customize Interface",
     Desc = "Personalize your experience",
@@ -241,11 +355,17 @@ for themeName, _ in pairs(WindUI:GetThemes()) do
 end
 table.sort(themes)
 
+local canchangetheme = true
+local canchangedropdown = true
+
+
+
 local themeDropdown = TabHandles.Appearance:Dropdown({
     Title = "loc:THEME_SELECT",
     Values = themes,
     Value = "Dark",
     Callback = function(theme)
+        canchangedropdown = false
         WindUI:SetTheme(theme)
         WindUI:Notify({
             Title = "Theme Applied",
@@ -253,12 +373,17 @@ local themeDropdown = TabHandles.Appearance:Dropdown({
             Icon = "palette",
             Duration = 2
         })
+        canchangedropdown = true
     end
 })
 
-TabHandles.Appearance:Slider({
+local transparencySlider = TabHandles.Appearance:Slider({
     Title = "loc:TRANSPARENCY",
-    Value = { Min = 0, Max = 1, Default = 0.2 },
+    Value = { 
+        Min = 0,
+        Max = 1,
+        Default = 0.2,
+    },
     Step = 0.1,
     Callback = function(value)
         WindUI.TransparencyValue = tonumber(value)
@@ -266,39 +391,102 @@ TabHandles.Appearance:Slider({
     end
 })
 
--- ===== Config Section =====
+local ThemeToggle = TabHandles.Appearance:Toggle({
+    Title = "Enable Dark Mode",
+    Desc = "Use dark color scheme",
+    Value = true,
+    Callback = function(state)
+        if canchangetheme then
+            WindUI:SetTheme(state and "Dark" or "Light")
+        end
+        if canchangedropdown then
+            themeDropdown:Select(state and "Dark" or "Light")
+        end
+    end
+})
+
+WindUI:OnThemeChange(function(theme)
+    canchangetheme = false
+    ThemeToggle:Set(theme == "Dark")
+    canchangetheme = true
+end)
+
+
+TabHandles.Appearance:Button({
+    Title = "Create New Theme",
+    Icon = "plus",
+    Callback = function()
+        Window:Dialog({
+            Title = "Create Theme",
+            Content = "This feature is coming soon!",
+            Buttons = {
+                {
+                    Title = "OK",
+                    Variant = "Primary"
+                }
+            }
+        })
+    end
+})
+
+TabHandles.Config:Paragraph({
+    Title = "Configuration Manager",
+    Desc = "Save and load your settings",
+    Image = "save",
+    ImageSize = 20,
+    Color = "White"
+})
+
 local configName = "default"
 local configFile = nil
-local MyPlayerData = { name = "Player1", level = 1, inventory = { "sword", "shield", "potion" } }
+local MyPlayerData = {
+    name = "Player1",
+    level = 1,
+    inventory = { "sword", "shield", "potion" }
+}
+
+TabHandles.Config:Input({
+    Title = "Config Name",
+    Value = configName,
+    Callback = function(value)
+        configName = value or "default"
+    end
+})
 
 local ConfigManager = Window.ConfigManager
 if ConfigManager then
     ConfigManager:Init(Window)
-    configFile = ConfigManager:CreateConfig(configName)
-
-    TabHandles.Config:Input({
-        Title = "Config Name",
-        Value = configName,
-        Callback = function(value)
-            configName = value or "default"
-        end
-    })
-
+    
     TabHandles.Config:Button({
         Title = "loc:SAVE_CONFIG",
         Icon = "save",
         Variant = "Primary",
         Callback = function()
+            configFile = ConfigManager:CreateConfig(configName)
+            
             configFile:Register("featureToggle", featureToggle)
             configFile:Register("intensitySlider", intensitySlider)
             configFile:Register("modeDropdown", modeDropdown)
             configFile:Register("themeDropdown", themeDropdown)
+            configFile:Register("transparencySlider", transparencySlider)
+            
             configFile:Set("playerData", MyPlayerData)
             configFile:Set("lastSave", os.date("%Y-%m-%d %H:%M:%S"))
+            
             if configFile:Save() then
-                WindUI:Notify({ Title = "loc:SAVE_CONFIG", Content = "Saved as: "..configName, Icon = "check", Duration = 3 })
+                WindUI:Notify({ 
+                    Title = "loc:SAVE_CONFIG", 
+                    Content = "Saved as: "..configName,
+                    Icon = "check",
+                    Duration = 3
+                })
             else
-                WindUI:Notify({ Title = "Error", Content = "Failed to save config", Icon = "x", Duration = 3 })
+                WindUI:Notify({ 
+                    Title = "Error", 
+                    Content = "Failed to save config",
+                    Icon = "x",
+                    Duration = 3
+                })
             end
         end
     })
@@ -307,18 +495,51 @@ if ConfigManager then
         Title = "loc:LOAD_CONFIG",
         Icon = "folder",
         Callback = function()
+            configFile = ConfigManager:CreateConfig(configName)
             local loadedData = configFile:Load()
+            
             if loadedData then
-                if loadedData.playerData then MyPlayerData = loadedData.playerData end
+                if loadedData.playerData then
+                    MyPlayerData = loadedData.playerData
+                end
+                
                 local lastSave = loadedData.lastSave or "Unknown"
-                WindUI:Notify({ Title = "loc:LOAD_CONFIG", Content = "Loaded: "..configName.."\nLast save: "..lastSave, Icon = "refresh-cw", Duration = 5 })
+                WindUI:Notify({ 
+                    Title = "loc:LOAD_CONFIG", 
+                    Content = "Loaded: "..configName.."\nLast save: "..lastSave,
+                    Icon = "refresh-cw",
+                    Duration = 5
+                })
+                
+                TabHandles.Config:Paragraph({
+                    Title = "Player Data",
+                    Desc = string.format("Name: %s\nLevel: %d\nInventory: %s", 
+                        MyPlayerData.name, 
+                        MyPlayerData.level, 
+                        table.concat(MyPlayerData.inventory, ", "))
+                })
             else
-                WindUI:Notify({ Title = "Error", Content = "Failed to load config", Icon = "x", Duration = 3 })
+                WindUI:Notify({ 
+                    Title = "Error", 
+                    Content = "Failed to load config",
+                    Icon = "x",
+                    Duration = 3
+                })
             end
         end
     })
+else
+    TabHandles.Config:Paragraph({
+        Title = "Config Manager Not Available",
+        Desc = "This feature requires ConfigManager",
+        Image = "alert-triangle",
+        ImageSize = 20,
+        Color = "White"
+    })
 end
 
+
+local footerSection = Window:Section({ Title = "WindUI " .. WindUI.Version })
 TabHandles.Config:Paragraph({
     Title = "Created with ❤️",
     Desc = "github.com/Footagesus/WindUI",
@@ -332,7 +553,11 @@ TabHandles.Config:Paragraph({
             Variant = "Tertiary",
             Callback = function()
                 setclipboard("https://github.com/Footagesus/WindUI")
-                WindUI:Notify({ Title = "Copied!", Content = "GitHub link copied to clipboard", Duration = 2 })
+                WindUI:Notify({
+                    Title = "Copied!",
+                    Content = "GitHub link copied to clipboard",
+                    Duration = 2
+                })
             end
         }
     }
@@ -340,6 +565,7 @@ TabHandles.Config:Paragraph({
 
 Window:OnClose(function()
     print("Window closed")
+    
     if ConfigManager and configFile then
         configFile:Set("playerData", MyPlayerData)
         configFile:Set("lastSave", os.date("%Y-%m-%d %H:%M:%S"))
