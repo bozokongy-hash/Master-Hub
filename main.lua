@@ -18,6 +18,7 @@ GUI:CreateMain({
     title = "MASTXR HUB",
     ToggleUI = "K",
     WindowIcon = "home",
+    Logo = "https://i.imgur.com/OuS6Kwc.png",  -- Your logo here
     Theme = {
         Background = Color3.fromRGB(30, 0, 0),
         Secondary = Color3.fromRGB(50, 0, 0),
@@ -82,7 +83,7 @@ GUI:CreateToggle({
     end
 })
 
--- Dioff Option (Example: simple toggle)
+-- Dioff Option
 GUI:CreateToggle({
     parent = main,
     text = "Dioff Mode",
