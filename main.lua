@@ -1,65 +1,215 @@
--- MASTXR HUB - GUI Skeleton with Key System
-local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
+-- Load WindUI framework
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 
--- Set your key here
-local correctKey = "mastxr123" -- You can change this
-
--- Prompt for key
-local userKey = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui"):WaitForChild("TextBox") -- Example: you can create your own input
-local input = game:GetService("Players").LocalPlayer:PromptInput("Enter Key for MASTXR GUI:")
-
-if input ~= correctKey then
-    warn("Incorrect key! GUI will not load.")
-    return
-end
-
--- Create Main GUI
-GUI:CreateMain({
-    Name = "MASTXR",
-    title = "MASTXR GUI",
-    ToggleUI = "K",
-    WindowIcon = "home", -- home icon
-    alwaysIconOnly = false,
-    Theme = {
-        Background = Color3.fromRGB(15, 15, 25),
-        Secondary = Color3.fromRGB(25, 25, 35),
-        Accent = Color3.fromRGB(255, 0, 0), -- Neon Red
-        AccentSecondary = Color3.fromRGB(200, 0, 0),
-        Text = Color3.fromRGB(255, 255, 255),
-        TextSecondary = Color3.fromRGB(180, 180, 180),
-        Border = Color3.fromRGB(45, 45, 55),
-        NavBackground = Color3.fromRGB(20, 20, 30),
-        Surface = Color3.fromRGB(30, 30, 40),
-        SurfaceVariant = Color3.fromRGB(35, 35, 45),
-        Success = Color3.fromRGB(40, 201, 64),
-        Warning = Color3.fromRGB(255, 189, 46),
-        Error = Color3.fromRGB(255, 95, 87),
-        Shadow = Color3.fromRGB(0, 0, 0)
-    },
-    Blur = {
-        Enable = false,
-        value = 0.2
-    },
-    Config = {
-        Enabled = false,
-        FileName = "MASTXRConfig",
-        FolerName = "MASTXRDir",
+-- Localization (renamed for MASTXR)
+WindUI:Localization({
+    Enabled = true,
+    Prefix = "loc:",
+    DefaultLanguage = "en",
+    Translations = {
+        ["en"] = {
+            ["MASTXR_EXAMPLE"] = "MASTXR HUB",
+            ["WELCOME"] = "Welcome to MASTXR Hub!",
+            ["LIB_DESC"] = "The ultimate all-in-one hub for Roblox",
+            ["SETTINGS"] = "Settings",
+            ["APPEARANCE"] = "Appearance",
+            ["FEATURES"] = "Features",
+            ["UTILITIES"] = "Utilities",
+            ["UI_ELEMENTS"] = "UI Elements",
+            ["CONFIGURATION"] = "Configuration",
+            ["SAVE_CONFIG"] = "Save Configuration",
+            ["LOAD_CONFIG"] = "Load Configuration",
+            ["THEME_SELECT"] = "Select Theme",
+            ["TRANSPARENCY"] = "Window Transparency"
+        }
     }
 })
 
--- Tabs
-local main = GUI:CreateTab("Main", "home")
-GUI:CreateSection({ parent = main, text = "Main Section" })
+-- Default transparency & theme
+WindUI.TransparencyValue = 0.2
+WindUI:SetTheme("Dark")
 
-local settings = GUI:CreateTab("Settings", "settings")
-GUI:CreateSection({ parent = settings, text = "Settings Section" })
+-- Window Setup (Renamed to MASTXR)
+local Window = WindUI:CreateWindow({
+    Title = "loc:MASTXR_EXAMPLE",
+    Icon = "geist:window",
+    Author = "loc:WELCOME",
+    Folder = "MASTXR_Hub",
+    Size = UDim2.fromOffset(580, 490),
+    Theme = "Dark",
+    User = {
+        Enabled = true,
+        Anonymous = true,
+        Callback = function()
+            WindUI:Notify({
+                Title = "User Profile",
+                Content = "Profile clicked!",
+                Duration = 3
+            })
+        end
+    },
+    Acrylic = true,
+    HideSearchBar = false,
+    SideBarWidth = 200,
+})
 
--- Example Button
-GUI:CreateButton({
-    parent = main,
-    text = "Test Button",
-    flag = "TestBtn",
-    callback = function()
-        GUI:CreateNotify({ title = "MASTXR", description = "Button clicked!" })
+-- Tags
+Window:Tag({ Title = "v2.0", Color = Color3.fromHex("#FF0050") })
+Window:Tag({ Title = "MASTXR", Color = Color3.fromHex("#30ff6a") })
+
+-- Clock Tag (kept)
+local TimeTag = Window:Tag({
+    Title = "--:--",
+    Radius = 0,
+    Color = WindUI:Gradient({
+        ["0"]   = { Color = Color3.fromHex("#FF0F7B"), Transparency = 0 },
+        ["100"] = { Color = Color3.fromHex("#F89B29"), Transparency = 0 },
+    }, { Rotation = 45 }),
+})
+
+-- Time updater
+task.spawn(function()
+	while true do
+		local now = os.date("*t")
+		TimeTag:SetTitle(string.format("%02d:%02d", now.hour, now.min))
+		task.wait(0.5)
+	end
+end)
+
+-- Theme Switcher button
+Window:CreateTopbarButton("theme-switcher", "moon", function()
+    WindUI:SetTheme(WindUI:GetCurrentTheme() == "Dark" and "Light" or "Dark")
+    WindUI:Notify({
+        Title = "Theme Changed",
+        Content = "Now using "..WindUI:GetCurrentTheme().." mode",
+        Duration = 2
+    })
+end, 999)
+
+-- Main Tabs
+local Tabs = {
+    Main = Window:Section({ Title = "loc:FEATURES", Opened = true }),
+    Settings = Window:Section({ Title = "loc:SETTINGS", Opened = true }),
+    Utilities = Window:Section({ Title = "loc:UTILITIES", Opened = true })
+}
+
+-- Tab Handles
+local TabHandles = {
+    Elements = Tabs.Main:Tab({ Title = "loc:UI_ELEMENTS", Icon = "layout-grid", Desc = "Core UI Elements" }),
+    Appearance = Tabs.Settings:Tab({ Title = "loc:APPEARANCE", Icon = "brush" }),
+    Config = Tabs.Utilities:Tab({ Title = "loc:CONFIGURATION", Icon = "settings" })
+}
+
+-- Example Elements
+local ElementsSection = TabHandles.Elements:Section({ Title = "Core Features", Icon = "sparkles" })
+
+local featureToggle = ElementsSection:Toggle({
+    Title = "Enable Features",
+    Value = false,
+    Callback = function(state) 
+        WindUI:Notify({
+            Title = "Features",
+            Content = state and "Enabled" or "Disabled",
+            Icon = state and "check" or "x",
+            Duration = 2
+        })
     end
+})
+
+local intensitySlider = ElementsSection:Slider({
+    Title = "Effect Intensity",
+    Value = { Min = 0, Max = 100, Default = 50 },
+    Callback = function(value) print("Intensity set to:", value) end
+})
+
+local modeDropdown = ElementsSection:Dropdown({
+    Title = "Mode Select",
+    Values = { "Standard", "Advanced", "Expert" },
+    Value = "Standard",
+    Callback = function(option)
+        WindUI:Notify({
+            Title = "Mode Changed",
+            Content = "Now: "..option,
+            Duration = 2
+        })
+    end
+})
+
+ElementsSection:Button({
+    Title = "Show Notification",
+    Icon = "bell",
+    Callback = function()
+        WindUI:Notify({
+            Title = "MASTXR Hub",
+            Content = "Notification test successful!",
+            Icon = "bell",
+            Duration = 3
+        })
+    end
+})
+
+-- Appearance Tab
+local themes = {}
+for themeName, _ in pairs(WindUI:GetThemes()) do
+    table.insert(themes, themeName)
+end
+table.sort(themes)
+
+local themeDropdown = TabHandles.Appearance:Dropdown({
+    Title = "loc:THEME_SELECT",
+    Values = themes,
+    Value = "Dark",
+    Callback = function(theme)
+        WindUI:SetTheme(theme)
+        WindUI:Notify({
+            Title = "Theme Applied",
+            Content = theme,
+            Icon = "palette",
+            Duration = 2
+        })
+    end
+})
+
+TabHandles.Appearance:Slider({
+    Title = "loc:TRANSPARENCY",
+    Value = { Min = 0, Max = 1, Default = 0.2 },
+    Step = 0.1,
+    Callback = function(value)
+        WindUI.TransparencyValue = tonumber(value)
+        Window:ToggleTransparency(tonumber(value) > 0)
+    end
+})
+
+-- Config Tab
+TabHandles.Config:Paragraph({
+    Title = "Configuration Manager",
+    Desc = "Save & Load settings easily",
+    Image = "save",
+    ImageSize = 20,
+    Color = "White"
+})
+
+-- Footer
+local footerSection = Window:Section({ Title = "MASTXR Hub " .. WindUI.Version })
+TabHandles.Config:Paragraph({
+    Title = "Created with ❤️",
+    Desc = "github.com/Footagesus/WindUI",
+    Image = "github",
+    ImageSize = 20,
+    Color = "Grey",
+    Buttons = {
+        {
+            Title = "Copy Link",
+            Icon = "copy",
+            Variant = "Tertiary",
+            Callback = function()
+                setclipboard("https://github.com/Footagesus/WindUI")
+                WindUI:Notify({
+                    Title = "Copied!",
+                    Content = "GitHub link copied",
+                    Duration = 2
+                })
+            end
+        }
+    }
 })
