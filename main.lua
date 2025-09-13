@@ -1,5 +1,9 @@
--- MASTXR HUB - Ultimate All-in-One Mod Menu
+-- MASTXR HUB v2 - Ultimate All-in-One GUI
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local humanoid = char:WaitForChild("Humanoid")
 
 -- Localization
 WindUI:Localization({
@@ -8,46 +12,33 @@ WindUI:Localization({
     DefaultLanguage = "en",
     Translations = {
         ["en"] = {
-            ["MASTXR_EXAMPLE"] = "MASTXR HUB",
+            ["MASTXR_EXAMPLE"] = "MASTXR HUB v2",
             ["WELCOME"] = "Welcome to MASTXR Hub!",
-            ["LIB_DESC"] = "The ultimate all-in-one hub for Roblox",
-            ["SETTINGS"] = "Settings",
-            ["APPEARANCE"] = "Appearance",
-            ["FEATURES"] = "Features",
+            ["PLAYER"] = "Player",
             ["UTILITIES"] = "Utilities",
-            ["UI_ELEMENTS"] = "UI Elements",
+            ["SETTINGS"] = "Settings",
+            ["CREDITS"] = "Credits",
+            ["THEME_SELECT"] = "Select Theme",
+            ["TRANSPARENCY"] = "Window Transparency",
             ["CONFIGURATION"] = "Configuration",
             ["SAVE_CONFIG"] = "Save Configuration",
-            ["LOAD_CONFIG"] = "Load Configuration",
-            ["THEME_SELECT"] = "Select Theme",
-            ["TRANSPARENCY"] = "Window Transparency"
+            ["LOAD_CONFIG"] = "Load Configuration"
         }
     }
 })
 
--- Default transparency & theme
+-- Default theme & transparency
 WindUI.TransparencyValue = 0.2
 WindUI:SetTheme("Dark")
 
--- Window Setup
+-- Window
 local Window = WindUI:CreateWindow({
     Title = "loc:MASTXR_EXAMPLE",
     Icon = "geist:window",
     Author = "loc:WELCOME",
-    Folder = "MASTXR_Hub",
-    Size = UDim2.fromOffset(580, 490),
+    Folder = "MASTXR_Hub_v2",
+    Size = UDim2.fromOffset(600, 500),
     Theme = "Dark",
-    User = {
-        Enabled = true,
-        Anonymous = true,
-        Callback = function()
-            WindUI:Notify({
-                Title = "User Profile",
-                Content = "Profile clicked!",
-                Duration = 3
-            })
-        end
-    },
     Acrylic = true,
     HideSearchBar = false,
     SideBarWidth = 200,
@@ -57,7 +48,7 @@ local Window = WindUI:CreateWindow({
 Window:Tag({ Title = "v2.0", Color = Color3.fromHex("#FF0050") })
 Window:Tag({ Title = "MASTXR", Color = Color3.fromHex("#30ff6a") })
 
--- Clock Tag
+-- Clock
 local TimeTag = Window:Tag({
     Title = "--:--",
     Radius = 0,
@@ -85,123 +76,123 @@ Window:CreateTopbarButton("theme-switcher", "moon", function()
     })
 end, 999)
 
--- Main Tabs
+-- Tabs
 local Tabs = {
-    Main = Window:Section({ Title = "loc:FEATURES", Opened = true }),
+    Player = Window:Section({ Title = "loc:PLAYER", Opened = true }),
+    Utilities = Window:Section({ Title = "loc:UTILITIES", Opened = true }),
     Settings = Window:Section({ Title = "loc:SETTINGS", Opened = true }),
-    Utilities = Window:Section({ Title = "loc:UTILITIES", Opened = true })
+    Credits = Window:Section({ Title = "loc:CREDITS", Opened = true }),
 }
 
--- Tab Handles
-local TabHandles = {
-    Elements = Tabs.Main:Tab({ Title = "loc:UI_ELEMENTS", Icon = "layout-grid", Desc = "Core UI Elements" }),
-    Appearance = Tabs.Settings:Tab({ Title = "loc:APPEARANCE", Icon = "brush" }),
-    Config = Tabs.Utilities:Tab({ Title = "loc:CONFIGURATION", Icon = "settings" })
-}
+-- Player Tab Features
+local PlayerTab = Tabs.Player:Tab({ Title = "Player Features", Icon = "user" })
+local PlayerSection = PlayerTab:Section({ Title = "Player Mods", Icon = "activity" })
 
--- ====== Features Tab ======
-local ElementsSection = TabHandles.Elements:Section({ Title = "Core Features", Icon = "sparkles" })
-
--- Feature Toggle
-local featureToggle = ElementsSection:Toggle({
-    Title = "Enable Features",
+PlayerSection:Toggle({
+    Title = "Enable Speed Hack",
     Value = false,
     Callback = function(state)
-        WindUI:Notify({
-            Title = "Features",
-            Content = state and "Enabled" or "Disabled",
-            Icon = state and "check" or "x",
-            Duration = 2
-        })
-        _G.FeaturesEnabled = state
+        if state then
+            humanoid.WalkSpeed = 100
+        else
+            humanoid.WalkSpeed = 16
+        end
+        WindUI:Notify({Title="Speed Hack", Content=state and "Enabled" or "Disabled", Duration=2})
     end
 })
 
--- Effect Intensity
-local intensitySlider = ElementsSection:Slider({
-    Title = "Effect Intensity",
-    Value = { Min = 0, Max = 100, Default = 50 },
-    Callback = function(value) _G.EffectIntensity = value end
+PlayerSection:Slider({
+    Title = "Jump Power",
+    Value = { Min = 50, Max = 500, Default = 50 },
+    Callback = function(value)
+        humanoid.JumpPower = value
+        WindUI:Notify({Title="Jump Power", Content="Set to "..value, Duration=2})
+    end
 })
 
--- Mode Dropdown
-local modeDropdown = ElementsSection:Dropdown({
-    Title = "Mode Select",
-    Values = { "Standard", "Advanced", "Expert" },
-    Value = "Standard",
-    Callback = function(option) _G.Mode = option end
+PlayerSection:Toggle({
+    Title = "Infinite Jump",
+    Value = false,
+    Callback = function(state)
+        if state then
+            _G.InfJump = true
+            game:GetService("UserInputService").JumpRequest:Connect(function()
+                if _G.InfJump then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end)
+        else
+            _G.InfJump = false
+        end
+        WindUI:Notify({Title="Infinite Jump", Content=state and "Enabled" or "Disabled", Duration=2})
+    end
 })
 
--- Notification Button
-ElementsSection:Button({
-    Title = "Show Notification",
-    Icon = "bell",
+PlayerSection:Toggle({
+    Title = "Noclip",
+    Value = false,
+    Callback = function(state)
+        if state then
+            _G.Noclip = true
+            game:GetService("RunService").Stepped:Connect(function()
+                if _G.Noclip then
+                    for _, part in pairs(char:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end)
+        else
+            _G.Noclip = false
+        end
+        WindUI:Notify({Title="Noclip", Content=state and "Enabled" or "Disabled", Duration=2})
+    end
+})
+
+-- Utilities Tab
+local UtilitiesTab = Tabs.Utilities:Tab({ Title = "Game Utilities", Icon = "tool" })
+local UtilsSection = UtilitiesTab:Section({ Title = "Utilities", Icon = "tool" })
+
+UtilsSection:Button({
+    Title = "Server Hop",
+    Icon = "refresh-cw",
     Callback = function()
-        WindUI:Notify({
-            Title = "MASTXR Hub",
-            Content = "Notification test successful!",
-            Icon = "bell",
-            Duration = 3
-        })
+        WindUI:Notify({Title="Server Hop", Content="Feature coming soon!", Duration=2})
     end
 })
 
--- ====== Combat / Mod Features ======
-local combatSection = TabHandles.Elements:Section({ Title = "Combat Features", Icon = "crosshair" })
-
--- Aimbot
-combatSection:Toggle({
-    Title = "Enable Aimbot",
-    Value = false,
-    Callback = function(state) _G.AimbotEnabled = state end
+UtilsSection:Button({
+    Title = "Infinite Yield",
+    Icon = "command",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source.lua"))()
+        WindUI:Notify({Title="Infinite Yield", Content="Executed!", Duration=2})
+    end
 })
 
-combatSection:Slider({
-    Title = "Aimbot FOV",
-    Value = { Min = 50, Max = 500, Default = 200 },
-    Callback = function(value) _G.AimbotFOV = value end
-})
+-- Settings Tab
+local SettingsTab = Tabs.Settings:Tab({ Title = "Appearance & Config", Icon = "settings" })
 
-combatSection:Slider({
-    Title = "Aimbot Smoothness",
-    Value = { Min = 1, Max = 20, Default = 5 },
-    Callback = function(value) _G.AimbotSmooth = value end
-})
-
--- ESP
-local espSection = TabHandles.Elements:Section({ Title = "ESP Features", Icon = "eye" })
-
-espSection:Toggle({
-    Title = "Enable ESP",
-    Value = false,
-    Callback = function(state) _G.ESPEnabled = state end
-})
-
-espSection:Dropdown({
-    Title = "ESP Type",
-    Values = { "Box", "Skeleton", "Healthbar" },
-    Value = "Box",
-    Callback = function(option) _G.ESPType = option end
-})
-
--- ====== Appearance Tab ======
+-- Theme Dropdown
 local themes = {}
 for themeName, _ in pairs(WindUI:GetThemes()) do
     table.insert(themes, themeName)
 end
 table.sort(themes)
 
-TabHandles.Appearance:Dropdown({
+SettingsTab:Dropdown({
     Title = "loc:THEME_SELECT",
     Values = themes,
-    Value = "Dark",
+    Value = WindUI:GetCurrentTheme(),
     Callback = function(theme)
         WindUI:SetTheme(theme)
-        WindUI:Notify({ Title = "Theme Applied", Content = theme, Icon = "palette", Duration = 2 })
+        WindUI:Notify({Title="Theme Applied", Content=theme, Duration=2})
     end
 })
 
-TabHandles.Appearance:Slider({
+-- Transparency Slider
+SettingsTab:Slider({
     Title = "loc:TRANSPARENCY",
     Value = { Min = 0, Max = 1, Default = 0.2 },
     Step = 0.1,
@@ -211,63 +202,43 @@ TabHandles.Appearance:Slider({
     end
 })
 
--- ====== Configuration Tab ======
-TabHandles.Config:Paragraph({
-    Title = "Configuration Manager",
-    Desc = "Save & Load settings easily",
-    Image = "save",
-    ImageSize = 20,
-    Color = "White"
-})
+-- Credits Tab
+local CreditsTab = Tabs.Credits:Tab({ Title = "Credits", Icon = "heart" })
 
--- Save/Load Buttons
-TabHandles.Config:Button({
-    Title = "Save Config",
-    Icon = "save",
-    Callback = function()
-        WindUI:SaveConfig("MASTXR_Config")
-        WindUI:Notify({ Title = "Config Saved", Content = "Your settings are saved!", Duration = 2 })
-    end
-})
-
-TabHandles.Config:Button({
-    Title = "Load Config",
-    Icon = "load",
-    Callback = function()
-        WindUI:LoadConfig("MASTXR_Config")
-        WindUI:Notify({ Title = "Config Loaded", Content = "Settings loaded!", Duration = 2 })
-    end
-})
-
--- Footer / Credits
-local footerSection = Window:Section({ Title = "MASTXR Hub " .. WindUI.Version })
-TabHandles.Config:Paragraph({
-    Title = "Created with ❤️",
-    Desc = "github.com/Footagesus/WindUI",
+CreditsTab:Paragraph({
+    Title = "MASTXR HUB v2",
+    Desc = "Created with ❤️ by Sweb",
     Image = "github",
     ImageSize = 20,
-    Color = "Grey",
+    Color = "White",
     Buttons = {
         {
-            Title = "Copy Link",
-            Icon = "copy",
-            Variant = "Tertiary",
+            Title = "Discord",
+            Icon = "message-circle",
+            Variant = "Primary",
             Callback = function()
-                setclipboard("https://github.com/Footagesus/WindUI")
-                WindUI:Notify({ Title = "Copied!", Content = "GitHub link copied", Duration = 2 })
+                setclipboard("https://discord.gg/yourserver")
+                WindUI:Notify({Title="Copied!", Content="Discord link copied", Duration=2})
+            end
+        },
+        {
+            Title = "GitHub",
+            Icon = "github",
+            Variant = "Primary",
+            Callback = function()
+                setclipboard("https://github.com/Sweb7xx")
+                WindUI:Notify({Title="Copied!", Content="GitHub link copied", Duration=2})
             end
         }
     }
 })
 
--- ====== Example Function Loops (Aimbot / ESP) ======
-task.spawn(function()
-    while task.wait() do
-        if _G.AimbotEnabled then
-            -- insert aimbot logic here
-        end
-        if _G.ESPEnabled then
-            -- insert ESP logic here based on _G.ESPType
-        end
-    end
-end)
+-- Footer
+Window:Section({ Title = "MASTXR HUB v2 "..WindUI.Version })
+
+-- Example notification to confirm UI is ready
+WindUI:Notify({
+    Title = "MASTXR HUB v2",
+    Content = "UI Loaded Successfully!",
+    Duration = 3
+})
