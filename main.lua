@@ -1,132 +1,55 @@
--- Player Tab
-local PlayerTab = Tabs.Player:Tab({ Title = "Player", Icon = "user" })
-local PlayerMenu = PlayerTab:Section({ Title = "Select Feature", Icon = "grid" })
+-- Load Ash-Libs Framework
+local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 
--- Helper function to go back to menu
-local function BackToMenu(section)
-    section:Clear()
-    PlayerMenu:Reopen()
-end
-
--- Aimbot
-PlayerMenu:Button({
-    Title = "Aimbot",
-    Icon = "target",
-    Callback = function()
-        PlayerMenu:Clear()
-        local AimbotSection = PlayerTab:Section({ Title = "Aimbot Settings", Icon = "target" })
-
-        AimbotSection:Toggle({
-            Title = "Enable Aimbot",
-            Value = false,
-            Callback = function(state)
-                WindUI:Notify({Title="Aimbot", Content=state and "Enabled" or "Disabled", Duration=2})
-            end
-        })
-        AimbotSection:Slider({
-            Title = "FOV",
-            Value = {Min=10, Max=180, Default=90},
-            Callback = function(value)
-                print("Aimbot FOV:", value)
-            end
-        })
-
-        AimbotSection:Button({
-            Title = "Back",
-            Icon = "arrow-left",
-            Callback = function() BackToMenu(AimbotSection) end
-        })
-    end
+-- Create Main Window
+GUI:CreateMain({
+    Name = "MASTXR",
+    title = "MASTXR GUI",
+    ToggleUI = "K",
+    WindowIcon = "home",
+    alwaysIconOnly = false,
+    Theme = {
+        Background = Color3.fromRGB(15, 15, 25),
+        Secondary = Color3.fromRGB(25, 25, 35),
+        Accent = Color3.fromRGB(200, 0, 50), -- Red accent for MASTXR vibe
+        AccentSecondary = Color3.fromRGB(150, 0, 40),
+        Text = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(180, 180, 180),
+        Border = Color3.fromRGB(45, 45, 55),
+        NavBackground = Color3.fromRGB(20, 20, 30),
+        Surface = Color3.fromRGB(30, 30, 40),
+        SurfaceVariant = Color3.fromRGB(35, 35, 45),
+        Success = Color3.fromRGB(40, 201, 64),
+        Warning = Color3.fromRGB(255, 189, 46),
+        Error = Color3.fromRGB(255, 95, 87),
+        Shadow = Color3.fromRGB(0, 0, 0)
+    },
+    Blur = {
+        Enable = false,
+        value = 0.2
+    },
+    Config = {
+        Enabled = false,
+        FileName = "MASTXR",
+        FolerName = "MASTXR_Dir"
+    }
 })
 
--- ESP
-PlayerMenu:Button({
-    Title = "ESP",
-    Icon = "eye",
-    Callback = function()
-        PlayerMenu:Clear()
-        local ESPSection = PlayerTab:Section({ Title = "ESP Settings", Icon = "eye" })
-
-        ESPSection:Toggle({
-            Title = "Enable ESP",
-            Value = false,
-            Callback = function(state)
-                WindUI:Notify({Title="ESP", Content=state and "Enabled" or "Disabled", Duration=2})
-            end
-        })
-
-        ESPSection:Button({
-            Title = "Back",
-            Icon = "arrow-left",
-            Callback = function() BackToMenu(ESPSection) end
-        })
-    end
+-- Example Tabs (empty for now)
+local main = GUI:CreateTab("Main", "home")
+GUI:CreateSection({
+    parent = main,
+    text = "Main Section"
 })
 
--- Misc
-PlayerMenu:Button({
-    Title = "Misc",
-    Icon = "settings",
-    Callback = function()
-        PlayerMenu:Clear()
-        local MiscSection = PlayerTab:Section({ Title = "Misc Player Mods", Icon = "settings" })
+local settings = GUI:CreateTab("Settings", "settings")
+GUI:CreateSection({
+    parent = settings,
+    text = "Settings Section"
+})
 
-        MiscSection:Toggle({
-            Title = "Speed Hack",
-            Value = false,
-            Callback = function(state)
-                humanoid.WalkSpeed = state and 100 or 16
-                WindUI:Notify({Title="Speed Hack", Content=state and "Enabled" or "Disabled", Duration=2})
-            end
-        })
-
-        MiscSection:Slider({
-            Title = "Jump Power",
-            Value = {Min=50, Max=500, Default=50},
-            Callback = function(value)
-                humanoid.JumpPower = value
-                WindUI:Notify({Title="Jump Power", Content="Set to "..value, Duration=2})
-            end
-        })
-
-        MiscSection:Toggle({
-            Title = "Infinite Jump",
-            Value = false,
-            Callback = function(state)
-                _G.InfJump = state
-                if state then
-                    game:GetService("UserInputService").JumpRequest:Connect(function()
-                        if _G.InfJump then humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end
-                    end)
-                end
-                WindUI:Notify({Title="Infinite Jump", Content=state and "Enabled" or "Disabled", Duration=2})
-            end
-        })
-
-        MiscSection:Toggle({
-            Title = "Noclip",
-            Value = false,
-            Callback = function(state)
-                _G.Noclip = state
-                if state then
-                    game:GetService("RunService").Stepped:Connect(function()
-                        if _G.Noclip then
-                            for _, part in pairs(char:GetDescendants()) do
-                                if part:IsA("BasePart") then
-                                    part.CanCollide = false
-                                end
-                            end
-                        end
-                    end)
-                end
-                WindUI:Notify({Title="Noclip", Content=state and "Enabled" or "Disabled", Duration=2})
-            end
-        })
-
-        MiscSection:Button({
-            Title = "Back",
-            Icon = "arrow-left",
-            Callback = function() BackToMenu(MiscSection) end
-        })
-    end
+local credits = GUI:CreateTab("Credits", "info")
+GUI:CreateSection({
+    parent = credits,
+    text = "Credits Section"
 })
