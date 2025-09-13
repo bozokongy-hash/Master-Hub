@@ -1,4 +1,4 @@
--- MASTXR HUB v2 - Ultimate All-in-One GUI
+-- MASTXR HUB v2 - All-in-One GUI with Feature Menus
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
@@ -84,95 +84,204 @@ local Tabs = {
     Credits = Window:Section({ Title = "loc:CREDITS", Opened = true }),
 }
 
--- Player Tab Features
+-------------------------
+-- PLAYER TAB
+-------------------------
 local PlayerTab = Tabs.Player:Tab({ Title = "Player Features", Icon = "user" })
-local PlayerSection = PlayerTab:Section({ Title = "Player Mods", Icon = "activity" })
+local PlayerMenu = PlayerTab:Section({ Title = "Select Feature", Icon = "grid" })
 
-PlayerSection:Toggle({
-    Title = "Enable Speed Hack",
-    Value = false,
-    Callback = function(state)
-        if state then
-            humanoid.WalkSpeed = 100
-        else
-            humanoid.WalkSpeed = 16
-        end
-        WindUI:Notify({Title="Speed Hack", Content=state and "Enabled" or "Disabled", Duration=2})
+-- Helper function to go back to menu
+local function reopenMenu(section)
+    section:Clear()
+    PlayerMenu:Reopen()
+end
+
+-- Aimbot
+PlayerMenu:Button({
+    Title = "Aimbot",
+    Icon = "target",
+    Callback = function()
+        PlayerMenu:Clear()
+        local AimbotSection = PlayerTab:Section({ Title = "Aimbot Settings", Icon = "target" })
+
+        AimbotSection:Toggle({
+            Title = "Enable Aimbot",
+            Value = false,
+            Callback = function(state)
+                WindUI:Notify({Title="Aimbot", Content=state and "Enabled" or "Disabled", Duration=2})
+                -- insert aimbot logic here
+            end
+        })
+
+        AimbotSection:Slider({
+            Title = "FOV",
+            Value = {Min=10, Max=180, Default=90},
+            Callback = function(value)
+                print("Aimbot FOV:", value)
+            end
+        })
+
+        AimbotSection:Button({
+            Title = "Back",
+            Icon = "arrow-left",
+            Callback = function() reopenMenu(AimbotSection) end
+        })
     end
 })
 
-PlayerSection:Slider({
-    Title = "Jump Power",
-    Value = { Min = 50, Max = 500, Default = 50 },
-    Callback = function(value)
-        humanoid.JumpPower = value
-        WindUI:Notify({Title="Jump Power", Content="Set to "..value, Duration=2})
+-- ESP
+PlayerMenu:Button({
+    Title = "ESP",
+    Icon = "eye",
+    Callback = function()
+        PlayerMenu:Clear()
+        local ESPSection = PlayerTab:Section({ Title = "ESP Settings", Icon = "eye" })
+
+        ESPSection:Toggle({
+            Title = "Enable ESP",
+            Value = false,
+            Callback = function(state)
+                WindUI:Notify({Title="ESP", Content=state and "Enabled" or "Disabled", Duration=2})
+                -- insert ESP logic here
+            end
+        })
+
+        ESPSection:Button({
+            Title = "Back",
+            Icon = "arrow-left",
+            Callback = function() reopenMenu(ESPSection) end
+        })
     end
 })
 
-PlayerSection:Toggle({
-    Title = "Infinite Jump",
-    Value = false,
-    Callback = function(state)
-        if state then
-            _G.InfJump = true
-            game:GetService("UserInputService").JumpRequest:Connect(function()
-                if _G.InfJump then
-                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+-- Misc Player Mods
+PlayerMenu:Button({
+    Title = "Misc Player Mods",
+    Icon = "settings",
+    Callback = function()
+        PlayerMenu:Clear()
+        local MiscSection = PlayerTab:Section({ Title = "Misc Player Mods", Icon = "settings" })
+
+        MiscSection:Toggle({
+            Title = "Speed Hack",
+            Value = false,
+            Callback = function(state)
+                humanoid.WalkSpeed = state and 100 or 16
+                WindUI:Notify({Title="Speed Hack", Content=state and "Enabled" or "Disabled", Duration=2})
+            end
+        })
+
+        MiscSection:Slider({
+            Title = "Jump Power",
+            Value = {Min=50, Max=500, Default=50},
+            Callback = function(value)
+                humanoid.JumpPower = value
+                WindUI:Notify({Title="Jump Power", Content="Set to "..value, Duration=2})
+            end
+        })
+
+        MiscSection:Toggle({
+            Title = "Infinite Jump",
+            Value = false,
+            Callback = function(state)
+                _G.InfJump = state
+                if state then
+                    game:GetService("UserInputService").JumpRequest:Connect(function()
+                        if _G.InfJump then humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end
+                    end)
                 end
-            end)
-        else
-            _G.InfJump = false
-        end
-        WindUI:Notify({Title="Infinite Jump", Content=state and "Enabled" or "Disabled", Duration=2})
-    end
-})
+                WindUI:Notify({Title="Infinite Jump", Content=state and "Enabled" or "Disabled", Duration=2})
+            end
+        })
 
-PlayerSection:Toggle({
-    Title = "Noclip",
-    Value = false,
-    Callback = function(state)
-        if state then
-            _G.Noclip = true
-            game:GetService("RunService").Stepped:Connect(function()
-                if _G.Noclip then
-                    for _, part in pairs(char:GetDescendants()) do
-                        if part:IsA("BasePart") then
-                            part.CanCollide = false
+        MiscSection:Toggle({
+            Title = "Noclip",
+            Value = false,
+            Callback = function(state)
+                _G.Noclip = state
+                if state then
+                    game:GetService("RunService").Stepped:Connect(function()
+                        if _G.Noclip then
+                            for _, part in pairs(char:GetDescendants()) do
+                                if part:IsA("BasePart") then
+                                    part.CanCollide = false
+                                end
+                            end
                         end
-                    end
+                    end)
                 end
-            end)
-        else
-            _G.Noclip = false
-        end
-        WindUI:Notify({Title="Noclip", Content=state and "Enabled" or "Disabled", Duration=2})
+                WindUI:Notify({Title="Noclip", Content=state and "Enabled" or "Disabled", Duration=2})
+            end
+        })
+
+        MiscSection:Button({
+            Title = "Back",
+            Icon = "arrow-left",
+            Callback = function() reopenMenu(MiscSection) end
+        })
     end
 })
 
--- Utilities Tab
+-------------------------
+-- UTILITIES TAB
+-------------------------
 local UtilitiesTab = Tabs.Utilities:Tab({ Title = "Game Utilities", Icon = "tool" })
-local UtilsSection = UtilitiesTab:Section({ Title = "Utilities", Icon = "tool" })
+local UtilitiesMenu = UtilitiesTab:Section({ Title = "Select Utility", Icon = "grid" })
 
-UtilsSection:Button({
+-- Server Hop
+UtilitiesMenu:Button({
     Title = "Server Hop",
     Icon = "refresh-cw",
     Callback = function()
-        WindUI:Notify({Title="Server Hop", Content="Feature coming soon!", Duration=2})
+        UtilitiesMenu:Clear()
+        local Section = UtilitiesTab:Section({ Title = "Server Hop", Icon = "refresh-cw" })
+
+        Section:Button({
+            Title = "Hop Now",
+            Icon = "zap",
+            Callback = function()
+                WindUI:Notify({Title="Server Hop", Content="Feature coming soon!", Duration=2})
+            end
+        })
+
+        Section:Button({
+            Title = "Back",
+            Icon = "arrow-left",
+            Callback = function() reopenMenu(Section) end
+        })
     end
 })
 
-UtilsSection:Button({
+-- Infinite Yield
+UtilitiesMenu:Button({
     Title = "Infinite Yield",
     Icon = "command",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source.lua"))()
-        WindUI:Notify({Title="Infinite Yield", Content="Executed!", Duration=2})
+        UtilitiesMenu:Clear()
+        local Section = UtilitiesTab:Section({ Title = "Infinite Yield", Icon = "command" })
+
+        Section:Button({
+            Title = "Execute",
+            Icon = "play",
+            Callback = function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source.lua"))()
+                WindUI:Notify({Title="Infinite Yield", Content="Executed!", Duration=2})
+            end
+        })
+
+        Section:Button({
+            Title = "Back",
+            Icon = "arrow-left",
+            Callback = function() reopenMenu(Section) end
+        })
     end
 })
 
--- Settings Tab
+-------------------------
+-- SETTINGS TAB
+-------------------------
 local SettingsTab = Tabs.Settings:Tab({ Title = "Appearance & Config", Icon = "settings" })
+local SettingsMenu = SettingsTab:Section({ Title = "Settings Menu", Icon = "grid" })
 
 -- Theme Dropdown
 local themes = {}
@@ -181,7 +290,7 @@ for themeName, _ in pairs(WindUI:GetThemes()) do
 end
 table.sort(themes)
 
-SettingsTab:Dropdown({
+SettingsMenu:Dropdown({
     Title = "loc:THEME_SELECT",
     Values = themes,
     Value = WindUI:GetCurrentTheme(),
@@ -192,7 +301,7 @@ SettingsTab:Dropdown({
 })
 
 -- Transparency Slider
-SettingsTab:Slider({
+SettingsMenu:Slider({
     Title = "loc:TRANSPARENCY",
     Value = { Min = 0, Max = 1, Default = 0.2 },
     Step = 0.1,
@@ -202,10 +311,13 @@ SettingsTab:Slider({
     end
 })
 
--- Credits Tab
+-------------------------
+-- CREDITS TAB
+-------------------------
 local CreditsTab = Tabs.Credits:Tab({ Title = "Credits", Icon = "heart" })
+local CreditsMenu = CreditsTab:Section({ Title = "Credits", Icon = "grid" })
 
-CreditsTab:Paragraph({
+CreditsMenu:Paragraph({
     Title = "MASTXR HUB v2",
     Desc = "Created with ❤️ by Sweb",
     Image = "github",
@@ -236,7 +348,7 @@ CreditsTab:Paragraph({
 -- Footer
 Window:Section({ Title = "MASTXR HUB v2 "..WindUI.Version })
 
--- Example notification to confirm UI is ready
+-- Final notification
 WindUI:Notify({
     Title = "MASTXR HUB v2",
     Content = "UI Loaded Successfully!",
