@@ -1,94 +1,150 @@
 -- Load Coasting UI Library
-local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
 
--- Variables
-local Player = game.Players.LocalPlayer
-local Mouse = Player:GetMouse()
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
 local Auras = {}
-local GUI = {}
 
--- Main GUI
-GUI.Window = CoastingLibrary:CreateWindow("SwebHub SAB Edition", true) -- true = moveable
+-- =======================
+-- Variables
+-- =======================
+local speedEnabled = false
+local speedValue = 50
+local jumpValue = 50
+local espEnabled = false
+local espColor = Color3.fromRGB(255, 0, 0)
+local autoTaunt = false
+local stealBrainrot = false
 
--- Tabs
-local playerTab = GUI.Window:CreateTab("Player")
-local espTab = GUI.Window:CreateTab("ESP")
-local funTab = GUI.Window:CreateTab("Fun")
-local configTab = GUI.Window:CreateTab("Config")
-local creditsTab = GUI.Window:CreateTab("Credits")
+-- =======================
+-- Create Tabs
+-- =======================
+local playerTab = Library:CreateTab("Player")
+local espTab = Library:CreateTab("ESP")
+local funTab = Library:CreateTab("Fun")
+local configTab = Library:CreateTab("Config")
+local creditsTab = Library:CreateTab("Credits")
 
 -- =======================
 -- Player Tab
 -- =======================
-local playerMain = playerTab:CreateSection("Main Features")
+local playerSection = playerTab:CreateSection("Player Features")
 
--- Speed Toggle
-local speedEnabled = false
-local speedValue = 50
-playerMain:CreateToggle("Speed Boost", function(state)
+playerSection:CreateToggle("Speed Boost", function(state)
     speedEnabled = state
 end)
-playerMain:CreateSlider("Speed Amount", 16, 200, 50, false, function(value)
+
+playerSection:CreateSlider("Speed Amount", 16, 200, 50, false, function(value)
     speedValue = value
 end)
 
--- Jump Height
-local jumpValue = 50
-playerMain:CreateSlider("Jump Power", 50, 300, 50, false, function(value)
+playerSection:CreateSlider("Jump Power", 50, 300, 50, false, function(value)
     jumpValue = value
-    if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") then
-        Player.Character:FindFirstChildOfClass("Humanoid").JumpPower = jumpValue
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = jumpValue
     end
 end)
 
--- Teleport to Player
-playerMain:CreateDropdown("Teleport To", {}, 1, function(selected)
-    local target = Players:FindFirstChild(selected)
-    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and Player.Character:FindFirstChild("HumanoidRootPart") then
-        Player.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0,5,0)
-    end
-end)
-
--- Auto Taunt
-local autoTaunt = false
-playerMain:CreateToggle("Auto Taunt", function(state)
-    autoTaunt = state
-end)
-
-RunService.RenderStepped:Connect(function()
-    if speedEnabled and Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") then
-        Player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = speedValue
-    end
-
-    if autoTaunt then
-        -- Example: make player play random animation / emote
-        if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") then
-            local hum = Player.Character:FindFirstChildOfClass("Humanoid")
-            hum:LoadAnimation(Instance.new("Animation")):Play()
+-- Teleport to Player Dropdown
+local function getPlayerNames()
+    local names = {}
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            table.insert(names, plr.Name)
         end
     end
+    return names
+end
+
+local teleportDropdown = playerSection:CreateDropdown("Teleport To", getPlayerNames(), 1, function(selected)
+    local target = Players:FindFirstChild(selected)
+    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
+    end
+end)
+
+Players.PlayerAdded:Connect(function()
+    teleportDropdown:Update(getPlayerNames())
+end)
+Players.PlayerRemoving:Connect(function()
+    teleportDropdown:Update(getPlayerNames())
+end)
+
+playerSection:CreateToggle("Auto Taunt", function(state)
+    autoTaunt = state
 end)
 
 -- =======================
 -- ESP Tab
 -- =======================
-local espMain = espTab:CreateSection("ESP Features")
-local espEnabled = false
-local espColor = Color3.fromRGB(255,0,0)
+local espSection = espTab:CreateSection("ESP Features")
 
-espMain:CreateToggle("Enable ESP", function(state)
+espSection:CreateToggle("Enable ESP", function(state)
     espEnabled = state
 end)
 
-espMain:CreateColorPicker("ESP Color", espColor, function(color)
+espSection:CreateColorPicker("ESP Color", espColor, function(color)
     espColor = color
 end)
 
-RunService.RenderStepped:Connect(function()
+-- =======================
+-- Fun Tab
+-- =======================
+local funSection = funTab:CreateSection("Chaos Features")
+
+funSection:CreateToggle("Steal Brainrot", function(state)
+    stealBrainrot = state
+end)
+
+funSection:CreateButton("Trigger Fun Chaos", function()
     for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= Player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            plr.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(math.random(-10,10),0,math.random(-10,10))
+        end
+    end
+end)
+
+-- =======================
+-- Config Tab
+-- =======================
+local configSection = configTab:CreateSection("Settings")
+
+configSection:CreateKeybind("Toggle GUI", Enum.KeyCode.RightShift, true, true, function(active)
+    Library:Toggle()
+end)
+
+configSection:CreateButton("Reset to Defaults", function()
+    speedEnabled = false
+    autoTaunt = false
+    espEnabled = false
+    stealBrainrot = false
+end)
+
+-- =======================
+-- Credits Tab
+-- =======================
+local creditsSection = creditsTab:CreateSection("Credits")
+creditsSection:CreateLabel("Credits", "Built & Coded by Sweb")
+creditsSection:CreateLabel("Discord", "@4503")
+
+-- =======================
+-- Runtime Updates
+-- =======================
+RunService.RenderStepped:Connect(function()
+    -- Speed
+    if speedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = speedValue
+    end
+
+    -- Auto Taunt (example placeholder)
+    if autoTaunt then
+        -- Add your taunt logic here
+    end
+
+    -- ESP
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
             local root = plr.Character.HumanoidRootPart
             if espEnabled then
                 if not Auras[plr] then
@@ -102,7 +158,7 @@ RunService.RenderStepped:Connect(function()
                 local screenPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(root.Position)
                 if onScreen then
                     Auras[plr].Position = Vector2.new(screenPos.X - 15, screenPos.Y - 15)
-                    Auras[plr].Size = Vector2.new(30,30)
+                    Auras[plr].Size = Vector2.new(30, 30)
                     Auras[plr].Visible = true
                 else
                     Auras[plr].Visible = false
@@ -117,64 +173,4 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- =======================
--- Fun Tab
--- =======================
-local funMain = funTab:CreateSection("Chaos Features")
-local stealBrainrot = false
-funMain:CreateToggle("Steal Brainrot", function(state)
-    stealBrainrot = state
-end)
-
-funMain:CreateButton("Trigger Fun Chaos", function()
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= Player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            plr.Character.HumanoidRootPart.CFrame = Player.Character.HumanoidRootPart.CFrame + Vector3.new(math.random(-10,10),0,math.random(-10,10))
-        end
-    end
-end)
-
--- =======================
--- Config Tab
--- =======================
-local configMain = configTab:CreateSection("Settings")
-configMain:CreateColorPicker("GUI Color", Color3.fromRGB(0, 255, 255), function(color)
-    GUI.Window:SetColor(color)
-end)
-
-configMain:CreateKeybind("Toggle GUI", Enum.KeyCode.RightShift, true, true, function(active)
-    GUI.Window:Toggle()
-end)
-
-configMain:CreateButton("Reset to Defaults", function()
-    speedEnabled = false
-    autoTaunt = false
-    espEnabled = false
-    stealBrainrot = false
-    GUI.Window:SetColor(Color3.fromRGB(0,255,255))
-end)
-
--- =======================
--- Credits Tab
--- =======================
-local creditsMain = creditsTab:CreateSection("SwebHub Info")
-creditsMain:CreateLabel("Credits", "Built & Coded by Sweb")
-creditsMain:CreateLabel("Discord", "@4503")
-
--- =======================
--- Update Player Dropdown dynamically
--- =======================
-local function updatePlayerDropdown()
-    local names = {}
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= Player then
-            table.insert(names, plr.Name)
-        end
-    end
-    playerMain:UpdateDropdown("Teleport To", names)
-end
-Players.PlayerAdded:Connect(updatePlayerDropdown)
-Players.PlayerRemoving:Connect(updatePlayerDropdown)
-updatePlayerDropdown()
-
-print("SwebHub SAB Edition loaded successfully!")
+print("SwebHub SAB Edition loaded correctly!")
