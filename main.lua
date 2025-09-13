@@ -1,4 +1,4 @@
--- MASTXR HUB - Ultimate Player Enhancements GUI (Cleaned Version)
+-- MASTXR HUB - Ultimate Player Enhancements GUI (Fixed Version)
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
@@ -18,7 +18,7 @@ GUI:CreateMain({
     title = "MASTXR HUB",
     ToggleUI = "K",
     WindowIcon = "home",
-    Logo = "https://i.imgur.com/OuS6Kwc.png",  -- Your logo here
+    Logo = "https://i.imgur.com/OuS6Kwc.png",
     Theme = {
         Background = Color3.fromRGB(30, 0, 0),
         Secondary = Color3.fromRGB(50, 0, 0),
@@ -40,12 +40,12 @@ end
 -- =========================
 -- PLAYER ENHANCEMENTS TAB
 -- =========================
-local main = GUI:CreateTab("Player Enhancements", "home")
-GUI:CreateSection({ parent = main, text = "Movement & Navigation" })
+local mainTab = GUI:CreateTab("Player Enhancements", "home")
+local movementSection = GUI:CreateSection({ parent = mainTab, text = "Movement & Navigation" })
 
 -- Sprint Toggle
 GUI:CreateToggle({
-    parent = main,
+    parent = movementSection,
     text = "Enable Sprint",
     default = false,
     callback = function(state)
@@ -54,8 +54,9 @@ GUI:CreateToggle({
         notify("Sprint", state and "Enabled" or "Disabled")
     end
 })
+
 GUI:CreateSlider({
-    parent = main,
+    parent = movementSection,
     text = "Sprint Speed",
     min = 16,
     max = 300,
@@ -67,14 +68,14 @@ GUI:CreateSlider({
 })
 
 -- Infinite Jump
-infiniteJumpEnabled = false
 UIS.JumpRequest:Connect(function()
     if infiniteJumpEnabled then
         humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     end
 end)
+
 GUI:CreateToggle({
-    parent = main,
+    parent = movementSection,
     text = "Enable Infinite Jump",
     default = false,
     callback = function(state)
@@ -83,9 +84,9 @@ GUI:CreateToggle({
     end
 })
 
--- Dioff Option
+-- Dioff Option (currently placeholder)
 GUI:CreateToggle({
-    parent = main,
+    parent = movementSection,
     text = "Dioff Mode",
     default = false,
     callback = function(state)
@@ -96,7 +97,7 @@ GUI:CreateToggle({
 
 -- Teleport Example
 GUI:CreateButton({
-    parent = main,
+    parent = movementSection,
     text = "Teleport to Spawn",
     callback = function()
         hrp.CFrame = CFrame.new(0,5,0)
@@ -107,18 +108,21 @@ GUI:CreateButton({
 -- =========================
 -- SETTINGS TAB
 -- =========================
-local settings = GUI:CreateTab("Settings", "settings")
-GUI:CreateSection({ parent = settings, text = "Reset Enhancements" })
-GUI:CreateButton({ parent = settings, text = "Reset Sprint", callback = function()
+local settingsTab = GUI:CreateTab("Settings", "settings")
+local resetSection = GUI:CreateSection({ parent = settingsTab, text = "Reset Enhancements" })
+
+GUI:CreateButton({ parent = resetSection, text = "Reset Sprint", callback = function()
     sprintEnabled = false
     humanoid.WalkSpeed = 16
     notify("Sprint", "Reset")
 end })
-GUI:CreateButton({ parent = settings, text = "Reset Infinite Jump", callback = function()
+
+GUI:CreateButton({ parent = resetSection, text = "Reset Infinite Jump", callback = function()
     infiniteJumpEnabled = false
     notify("Infinite Jump", "Reset")
 end })
-GUI:CreateButton({ parent = settings, text = "Reset Dioff", callback = function()
+
+GUI:CreateButton({ parent = resetSection, text = "Reset Dioff", callback = function()
     dioffEnabled = false
     notify("Dioff", "Reset")
 end })
@@ -126,53 +130,53 @@ end })
 -- =========================
 -- THEMES TAB
 -- =========================
-local themes = GUI:CreateTab("Themes", "settings")
-GUI:CreateSection({ parent = themes, text = "Custom Theme" })
+local themesTab = GUI:CreateTab("Themes", "settings")
+local themeSection = GUI:CreateSection({ parent = themesTab, text = "Custom Theme" })
+
 GUI:CreateColorPicker({
-    parent = themes,
+    parent = themeSection,
     text = "Background Color",
     default = Color3.fromRGB(30,0,0),
     callback = function(color)
         GUI.Theme.Background = color
+        if GUI.UpdateTheme then GUI:UpdateTheme() end
         notify("Theme", "Background Updated")
     end
 })
+
 GUI:CreateColorPicker({
-    parent = themes,
+    parent = themeSection,
     text = "Accent Color",
     default = Color3.fromRGB(255,0,0),
     callback = function(color)
         GUI.Theme.Accent = color
+        if GUI.UpdateTheme then GUI:UpdateTheme() end
         notify("Theme", "Accent Updated")
     end
 })
+
 GUI:CreateColorPicker({
-    parent = themes,
+    parent = themeSection,
     text = "Text Color",
     default = Color3.fromRGB(255,255,255),
     callback = function(color)
         GUI.Theme.Text = color
+        if GUI.UpdateTheme then GUI:UpdateTheme() end
         notify("Theme", "Text Updated")
     end
 })
 
 -- =========================
--- CREDITS TAB (Improved Layout)
+-- CREDITS TAB
 -- =========================
-local credits = GUI:CreateTab("Credits", "info")
+local creditsTab = GUI:CreateTab("Credits", "info")
+local mainCreditsSection = GUI:CreateSection({ parent = creditsTab, text = "MASTXR HUB - Credits" })
 
--- Main Section Title
-GUI:CreateSection({ parent = credits, text = "MASTXR HUB - Credits" })
+local creatorSection = GUI:CreateSection({ parent = creditsTab, text = "Creator" })
+GUI:CreateLabel({ parent = creatorSection, text = "Name:", description = "Sweb" })
 
--- Creator Section
-GUI:CreateSection({ parent = credits, text = "Creator" })
-GUI:CreateLabel({ parent = credits, text = "Name:", description = "Sweb" })
+local contactSection = GUI:CreateSection({ parent = creditsTab, text = "Contact" })
+GUI:CreateLabel({ parent = contactSection, text = "Discord:", description = "@4503" })
 
--- Contact Section
-GUI:CreateSection({ parent = credits, text = "Contact" })
-GUI:CreateLabel({ parent = credits, text = "Discord:", description = "@4503" })
-
--- Library Section
-GUI:CreateSection({ parent = credits, text = "GUI Library" })
-GUI:CreateLabel({ parent = credits, text = "Library Used:", description = "Ash-Libs" })
- 
+local librarySection = GUI:CreateSection({ parent = creditsTab, text = "GUI Library" })
+GUI:CreateLabel({ parent = librarySection, text = "Library Used:", description = "Ash-Libs" })
