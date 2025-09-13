@@ -1,59 +1,180 @@
--- Key System
-local correctKey = "YZwrKXe7qWuddgruV15RvI3EXpapu3xM"
-local userInput = ""
+-- Load Coasting UI Library
+local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
 
--- Simple UI prompt using Roblox's TextBox
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "KeyPrompt"
-ScreenGui.Parent = game:GetService("CoreGui")
+-- Variables
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Auras = {}
+local GUI = {}
 
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 300, 0, 150)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -75)
-Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Frame.Parent = ScreenGui
+-- Main GUI
+GUI.Window = CoastingLibrary:CreateWindow("SwebHub SAB Edition", true) -- true = moveable
 
-local TextLabel = Instance.new("TextLabel")
-TextLabel.Size = UDim2.new(1, -20, 0, 50)
-TextLabel.Position = UDim2.new(0, 10, 0, 10)
-TextLabel.Text = "Enter Key to Continue"
-TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.BackgroundTransparency = 1
-TextLabel.Font = Enum.Font.SourceSansBold
-TextLabel.TextSize = 18
-TextLabel.Parent = Frame
+-- Tabs
+local playerTab = GUI.Window:CreateTab("Player")
+local espTab = GUI.Window:CreateTab("ESP")
+local funTab = GUI.Window:CreateTab("Fun")
+local configTab = GUI.Window:CreateTab("Config")
+local creditsTab = GUI.Window:CreateTab("Credits")
 
-local TextBox = Instance.new("TextBox")
-TextBox.Size = UDim2.new(1, -20, 0, 30)
-TextBox.Position = UDim2.new(0, 10, 0, 70)
-TextBox.PlaceholderText = "Enter Key..."
-TextBox.Text = ""
-TextBox.ClearTextOnFocus = false
-TextBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextBox.Parent = Frame
+-- =======================
+-- Player Tab
+-- =======================
+local playerMain = playerTab:CreateSection("Main Features")
 
-local Button = Instance.new("TextButton")
-Button.Size = UDim2.new(0, 100, 0, 30)
-Button.Position = UDim2.new(0.5, -50, 0, 110)
-Button.Text = "Submit"
-Button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button.Parent = Frame
+-- Speed Toggle
+local speedEnabled = false
+local speedValue = 50
+playerMain:CreateToggle("Speed Boost", function(state)
+    speedEnabled = state
+end)
+playerMain:CreateSlider("Speed Amount", 16, 200, 50, false, function(value)
+    speedValue = value
+end)
 
-local success = false
-Button.MouseButton1Click:Connect(function()
-    if TextBox.Text == correctKey then
-        success = true
-        ScreenGui:Destroy() -- Remove key prompt
-    else
-        TextLabel.Text = "Incorrect Key!"
-        TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+-- Jump Height
+local jumpValue = 50
+playerMain:CreateSlider("Jump Power", 50, 300, 50, false, function(value)
+    jumpValue = value
+    if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") then
+        Player.Character:FindFirstChildOfClass("Humanoid").JumpPower = jumpValue
     end
 end)
 
--- Wait until key is correct before loading UI
-repeat wait() until success
+-- Teleport to Player
+playerMain:CreateDropdown("Teleport To", {}, 1, function(selected)
+    local target = Players:FindFirstChild(selected)
+    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and Player.Character:FindFirstChild("HumanoidRootPart") then
+        Player.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0,5,0)
+    end
+end)
 
--- From here, load the rest of your Coasting UI
-local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
+-- Auto Taunt
+local autoTaunt = false
+playerMain:CreateToggle("Auto Taunt", function(state)
+    autoTaunt = state
+end)
+
+RunService.RenderStepped:Connect(function()
+    if speedEnabled and Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") then
+        Player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = speedValue
+    end
+
+    if autoTaunt then
+        -- Example: make player play random animation / emote
+        if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") then
+            local hum = Player.Character:FindFirstChildOfClass("Humanoid")
+            hum:LoadAnimation(Instance.new("Animation")):Play()
+        end
+    end
+end)
+
+-- =======================
+-- ESP Tab
+-- =======================
+local espMain = espTab:CreateSection("ESP Features")
+local espEnabled = false
+local espColor = Color3.fromRGB(255,0,0)
+
+espMain:CreateToggle("Enable ESP", function(state)
+    espEnabled = state
+end)
+
+espMain:CreateColorPicker("ESP Color", espColor, function(color)
+    espColor = color
+end)
+
+RunService.RenderStepped:Connect(function()
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= Player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            local root = plr.Character.HumanoidRootPart
+            if espEnabled then
+                if not Auras[plr] then
+                    local box = Drawing.new("Square")
+                    box.Visible = true
+                    box.Color = espColor
+                    box.Thickness = 2
+                    box.Filled = false
+                    Auras[plr] = box
+                end
+                local screenPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(root.Position)
+                if onScreen then
+                    Auras[plr].Position = Vector2.new(screenPos.X - 15, screenPos.Y - 15)
+                    Auras[plr].Size = Vector2.new(30,30)
+                    Auras[plr].Visible = true
+                else
+                    Auras[plr].Visible = false
+                end
+            else
+                if Auras[plr] then
+                    Auras[plr]:Remove()
+                    Auras[plr] = nil
+                end
+            end
+        end
+    end
+end)
+
+-- =======================
+-- Fun Tab
+-- =======================
+local funMain = funTab:CreateSection("Chaos Features")
+local stealBrainrot = false
+funMain:CreateToggle("Steal Brainrot", function(state)
+    stealBrainrot = state
+end)
+
+funMain:CreateButton("Trigger Fun Chaos", function()
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= Player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            plr.Character.HumanoidRootPart.CFrame = Player.Character.HumanoidRootPart.CFrame + Vector3.new(math.random(-10,10),0,math.random(-10,10))
+        end
+    end
+end)
+
+-- =======================
+-- Config Tab
+-- =======================
+local configMain = configTab:CreateSection("Settings")
+configMain:CreateColorPicker("GUI Color", Color3.fromRGB(0, 255, 255), function(color)
+    GUI.Window:SetColor(color)
+end)
+
+configMain:CreateKeybind("Toggle GUI", Enum.KeyCode.RightShift, true, true, function(active)
+    GUI.Window:Toggle()
+end)
+
+configMain:CreateButton("Reset to Defaults", function()
+    speedEnabled = false
+    autoTaunt = false
+    espEnabled = false
+    stealBrainrot = false
+    GUI.Window:SetColor(Color3.fromRGB(0,255,255))
+end)
+
+-- =======================
+-- Credits Tab
+-- =======================
+local creditsMain = creditsTab:CreateSection("SwebHub Info")
+creditsMain:CreateLabel("Credits", "Built & Coded by Sweb")
+creditsMain:CreateLabel("Discord", "@4503")
+
+-- =======================
+-- Update Player Dropdown dynamically
+-- =======================
+local function updatePlayerDropdown()
+    local names = {}
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= Player then
+            table.insert(names, plr.Name)
+        end
+    end
+    playerMain:UpdateDropdown("Teleport To", names)
+end
+Players.PlayerAdded:Connect(updatePlayerDropdown)
+Players.PlayerRemoving:Connect(updatePlayerDropdown)
+updatePlayerDropdown()
+
+print("SwebHub SAB Edition loaded successfully!")
