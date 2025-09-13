@@ -157,10 +157,21 @@ GUI:CreateColorPicker({
 })
 
 -- =========================
--- CREDITS TAB
+-- CREDITS TAB (Improved Layout)
 -- =========================
 local credits = GUI:CreateTab("Credits", "info")
-GUI:CreateSection({ parent = credits, text = "MASTXR HUB Credits" })
-GUI:CreateLabel({ parent = credits, text = "Created By", description = "Sweb" })
-GUI:CreateLabel({ parent = credits, text = "Discord", description = "@4503" })
-GUI:CreateLabel({ parent = credits, text = "GUI Library", description = "Ash-Libs" })
+
+-- Main Section Title
+GUI:CreateSection({ parent = credits, text = "MASTXR HUB - Credits" })
+
+-- Creator Section
+GUI:CreateSection({ parent = credits, text = "Creator" })
+GUI:CreateLabel({ parent = credits, text = "Name:", description = "Sweb" })
+
+-- Contact Section
+GUI:CreateSection({ parent = credits, text = "Contact" })
+GUI:CreateLabel({ parent = credits, text = "Discord:", description = "@4503" })
+
+-- Library Section
+GUI:CreateSection({ parent = credits, text = "GUI Library" })
+GUI:CreateLabel({ parent = credits, text = "Library Used:", description = "Ash-Libs" })
