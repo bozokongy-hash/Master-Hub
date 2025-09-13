@@ -14,6 +14,8 @@ local flyEnabled = false
 local flySpeed = 50
 local infiniteJumpEnabled = false
 local noclipConnection
+local flyBV
+local flyControls = {W=false, S=false, A=false, D=false, Space=false, Shift=false}
 
 -- GUI Main
 GUI:CreateMain({
@@ -34,6 +36,11 @@ GUI:CreateMain({
     Config = { Enabled = false }
 })
 
+-- Helper: Small notifications
+local function notify(title, description)
+    GUI:CreateNotify({title=title, description=description, Time=2})
+end
+
 -- =========================
 -- PLAYER ENHANCEMENTS TAB
 -- =========================
@@ -48,14 +55,14 @@ GUI:CreateToggle({
     callback = function(state)
         sprintEnabled = state
         humanoid.WalkSpeed = state and sprintSpeed or 16
-        GUI:CreateNotify({title="Sprint", description="Sprint "..(state and "Enabled" or "Disabled")})
+        notify("Sprint", state and "Enabled" or "Disabled")
     end
 })
 GUI:CreateSlider({
     parent = main,
     text = "Sprint Speed",
     min = 16,
-    max = 200,
+    max = 300,
     default = 50,
     function(value)
         sprintSpeed = value
@@ -76,13 +83,11 @@ GUI:CreateToggle({
     default = false,
     callback = function(state)
         infiniteJumpEnabled = state
-        GUI:CreateNotify({title="Infinite Jump", description=state and "Enabled" or "Disabled"})
+        notify("Infinite Jump", state and "Enabled" or "Disabled")
     end
 })
 
 -- Fly / Noclip
-local flyBV
-local flyControls = {W=false, S=false, A=false, D=false, Space=false, Shift=false}
 local function updateFly()
     if flyEnabled then
         local camCF = workspace.CurrentCamera.CFrame
@@ -93,7 +98,11 @@ local function updateFly()
         if flyControls.D then direction += camCF.RightVector end
         if flyControls.Space then direction += Vector3.new(0,1,0) end
         if flyControls.Shift then direction -= Vector3.new(0,1,0) end
-        flyBV.Velocity = direction.Unit * flySpeed
+        if direction.Magnitude > 0 then
+            flyBV.Velocity = direction.Unit * flySpeed
+        else
+            flyBV.Velocity = Vector3.new(0,0,0)
+        end
     end
 end
 
@@ -115,14 +124,14 @@ GUI:CreateToggle({
             flyBV.MaxForce = Vector3.new(1e5,1e5,1e5)
             flyBV.Velocity = Vector3.new(0,0,0)
             flyBV.Parent = hrp
-            GUI:CreateNotify({title="Fly", description="Fly Enabled"})
+            notify("Fly", "Enabled")
         else
             if noclipConnection then noclipConnection:Disconnect() end
             if flyBV then flyBV:Destroy() end
             for _, part in pairs(char:GetDescendants()) do
                 if part:IsA("BasePart") then part.CanCollide = true end
             end
-            GUI:CreateNotify({title="Fly", description="Fly Disabled"})
+            notify("Fly", "Disabled")
         end
     end
 })
@@ -168,17 +177,24 @@ GUI:CreateButton({
     text = "Teleport to Spawn",
     callback = function()
         hrp.CFrame = CFrame.new(0,5,0)
-        GUI:CreateNotify({title="Teleport", description="Teleported to Spawn"})
+        notify("Teleport", "Teleported to Spawn")
     end
 })
 
 -- =========================
 -- SETTINGS TAB
 -- =========================
-local settings = GUI:CreateTab("MASTXR Settings", "settings")
+local settings = GUI:CreateTab("Settings", "settings")
 GUI:CreateSection({ parent = settings, text = "Reset Enhancements" })
-GUI:CreateButton({ parent = settings, text = "Reset Sprint", callback = function() sprintEnabled = false humanoid.WalkSpeed=16 end })
-GUI:CreateButton({ parent = settings, text = "Reset Infinite Jump", callback = function() infiniteJumpEnabled = false end })
+GUI:CreateButton({ parent = settings, text = "Reset Sprint", callback = function()
+    sprintEnabled = false
+    humanoid.WalkSpeed = 16
+    notify("Sprint", "Reset")
+end })
+GUI:CreateButton({ parent = settings, text = "Reset Infinite Jump", callback = function()
+    infiniteJumpEnabled = false
+    notify("Infinite Jump", "Reset")
+end })
 GUI:CreateButton({ parent = settings, text = "Reset Fly/Noclip", callback = function()
     flyEnabled = false
     if noclipConnection then noclipConnection:Disconnect() end
@@ -186,21 +202,38 @@ GUI:CreateButton({ parent = settings, text = "Reset Fly/Noclip", callback = func
     for _, part in pairs(char:GetDescendants()) do
         if part:IsA("BasePart") then part.CanCollide = true end
     end
+    notify("Fly", "Reset")
 end })
 
 -- =========================
 -- THEMES TAB
 -- =========================
 local themes = GUI:CreateTab("Themes", "settings")
-GUI:CreateSection({ parent = themes, text = "Pick Theme" })
-local themeOptions = {
-    Red = {Background=Color3.fromRGB(30,0,0), Accent=Color3.fromRGB(255,0,0)},
-    Blue = {Background=Color3.fromRGB(0,0,30), Accent=Color3.fromRGB(0,170,255)},
-    Dark = {Background=Color3.fromRGB(15,15,15), Accent=Color3.fromRGB(255,255,255)}
-}
-for name, colors in pairs(themeOptions) do
-    GUI:CreateButton({ parent = themes, text = name.." Theme", callback = function()
-        GUI:SetTheme({Background=colors.Background, Accent=colors.Accent})
-        GUI:CreateNotify({title="Theme", description=name.." Applied"})
-    end })
-end
+GUI:CreateSection({ parent = themes, text = "Custom Theme" })
+GUI:CreateColorPicker({
+    parent = themes,
+    text = "Background Color",
+    default = Color3.fromRGB(30,0,0),
+    callback = function(color)
+        GUI.Theme.Background = color
+        notify("Theme", "Background Updated")
+    end
+})
+GUI:CreateColorPicker({
+    parent = themes,
+    text = "Accent Color",
+    default = Color3.fromRGB(255,0,0),
+    callback = function(color)
+        GUI.Theme.Accent = color
+        notify("Theme", "Accent Updated")
+    end
+})
+GUI:CreateColorPicker({
+    parent = themes,
+    text = "Text Color",
+    default = Color3.fromRGB(255,255,255),
+    callback = function(color)
+        GUI.Theme.Text = color
+        notify("Theme", "Text Updated")
+    end
+})
