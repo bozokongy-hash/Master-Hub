@@ -1,21 +1,16 @@
--- MASTXR HUB - Ultimate Player Enhancements GUI
+-- MASTXR HUB - Ultimate Player Enhancements GUI (Cleaned Version)
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 local hrp = char:WaitForChild("HumanoidRootPart")
 local humanoid = char:WaitForChild("Humanoid")
 local UIS = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 
 -- Feature States
 local sprintEnabled = false
 local sprintSpeed = 50
-local flyEnabled = false
-local flySpeed = 50
 local infiniteJumpEnabled = false
-local noclipConnection
-local flyBV
-local flyControls = {W=false, S=false, A=false, D=false, Space=false, Shift=false}
+local dioffEnabled = false
 
 -- GUI Main
 GUI:CreateMain({
@@ -32,7 +27,7 @@ GUI:CreateMain({
         Border = Color3.fromRGB(100, 0, 0),
         NavBackground = Color3.fromRGB(20, 0, 0)
     },
-    Blur = { Enable = false, value = 0.2 },
+    Blur = { Enable = false, value = 0 },
     Config = { Enabled = false }
 })
 
@@ -64,7 +59,7 @@ GUI:CreateSlider({
     min = 16,
     max = 300,
     default = 50,
-    function(value)
+    callback = function(value)
         sprintSpeed = value
         if sprintEnabled then humanoid.WalkSpeed = sprintSpeed end
     end
@@ -87,89 +82,16 @@ GUI:CreateToggle({
     end
 })
 
--- Fly / Noclip
-local function updateFly()
-    if flyEnabled then
-        local camCF = workspace.CurrentCamera.CFrame
-        local direction = Vector3.new(0,0,0)
-        if flyControls.W then direction += camCF.LookVector end
-        if flyControls.S then direction -= camCF.LookVector end
-        if flyControls.A then direction -= camCF.RightVector end
-        if flyControls.D then direction += camCF.RightVector end
-        if flyControls.Space then direction += Vector3.new(0,1,0) end
-        if flyControls.Shift then direction -= Vector3.new(0,1,0) end
-        if direction.Magnitude > 0 then
-            flyBV.Velocity = direction.Unit * flySpeed
-        else
-            flyBV.Velocity = Vector3.new(0,0,0)
-        end
-    end
-end
-
+-- Dioff Option (Example: simple toggle)
 GUI:CreateToggle({
     parent = main,
-    text = "Enable Fly / Noclip",
+    text = "Dioff Mode",
     default = false,
     callback = function(state)
-        flyEnabled = state
-        if state then
-            -- Noclip
-            noclipConnection = RunService.Stepped:Connect(function()
-                for _, part in pairs(char:GetDescendants()) do
-                    if part:IsA("BasePart") then part.CanCollide = false end
-                end
-            end)
-            -- Fly setup
-            flyBV = Instance.new("BodyVelocity")
-            flyBV.MaxForce = Vector3.new(1e5,1e5,1e5)
-            flyBV.Velocity = Vector3.new(0,0,0)
-            flyBV.Parent = hrp
-            notify("Fly", "Enabled")
-        else
-            if noclipConnection then noclipConnection:Disconnect() end
-            if flyBV then flyBV:Destroy() end
-            for _, part in pairs(char:GetDescendants()) do
-                if part:IsA("BasePart") then part.CanCollide = true end
-            end
-            notify("Fly", "Disabled")
-        end
+        dioffEnabled = state
+        notify("Dioff", state and "Enabled" or "Disabled")
     end
 })
-GUI:CreateSlider({
-    parent = main,
-    text = "Fly Speed",
-    min = 10,
-    max = 300,
-    default = 50,
-    function(value)
-        flySpeed = value
-    end
-})
-
--- Fly controls
-UIS.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Keyboard then
-        if input.KeyCode == Enum.KeyCode.W then flyControls.W = true end
-        if input.KeyCode == Enum.KeyCode.S then flyControls.S = true end
-        if input.KeyCode == Enum.KeyCode.A then flyControls.A = true end
-        if input.KeyCode == Enum.KeyCode.D then flyControls.D = true end
-        if input.KeyCode == Enum.KeyCode.Space then flyControls.Space = true end
-        if input.KeyCode == Enum.KeyCode.LeftShift then flyControls.Shift = true end
-    end
-end)
-UIS.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Keyboard then
-        if input.KeyCode == Enum.KeyCode.W then flyControls.W = false end
-        if input.KeyCode == Enum.KeyCode.S then flyControls.S = false end
-        if input.KeyCode == Enum.KeyCode.A then flyControls.A = false end
-        if input.KeyCode == Enum.KeyCode.D then flyControls.D = false end
-        if input.KeyCode == Enum.KeyCode.Space then flyControls.Space = false end
-        if input.KeyCode == Enum.KeyCode.LeftShift then flyControls.Shift = false end
-    end
-end)
-RunService.RenderStepped:Connect(function()
-    if flyEnabled then updateFly() end
-end)
 
 -- Teleport Example
 GUI:CreateButton({
@@ -195,14 +117,9 @@ GUI:CreateButton({ parent = settings, text = "Reset Infinite Jump", callback = f
     infiniteJumpEnabled = false
     notify("Infinite Jump", "Reset")
 end })
-GUI:CreateButton({ parent = settings, text = "Reset Fly/Noclip", callback = function()
-    flyEnabled = false
-    if noclipConnection then noclipConnection:Disconnect() end
-    if flyBV then flyBV:Destroy() end
-    for _, part in pairs(char:GetDescendants()) do
-        if part:IsA("BasePart") then part.CanCollide = true end
-    end
-    notify("Fly", "Reset")
+GUI:CreateButton({ parent = settings, text = "Reset Dioff", callback = function()
+    dioffEnabled = false
+    notify("Dioff", "Reset")
 end })
 
 -- =========================
@@ -237,3 +154,12 @@ GUI:CreateColorPicker({
         notify("Theme", "Text Updated")
     end
 })
+
+-- =========================
+-- CREDITS TAB
+-- =========================
+local credits = GUI:CreateTab("Credits", "info")
+GUI:CreateSection({ parent = credits, text = "MASTXR HUB Credits" })
+GUI:CreateLabel({ parent = credits, text = "Created By", description = "Sweb" })
+GUI:CreateLabel({ parent = credits, text = "Discord", description = "@4503" })
+GUI:CreateLabel({ parent = credits, text = "GUI Library", description = "Ash-Libs" })
