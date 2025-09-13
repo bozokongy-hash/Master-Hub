@@ -1,4 +1,4 @@
--- MASTXR HUB - Ultimate All-in-One GUI
+-- MASTXR HUB - Ultimate Player Enhancements GUI
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
@@ -17,9 +17,7 @@ local noclipConnection
 local flyBV
 local flyControls = {W=false, S=false, A=false, D=false, Space=false, Shift=false}
 
--- =========================
--- GUI MAIN
--- =========================
+-- GUI Main
 GUI:CreateMain({
     Name = "MASTXR HUB",
     title = "MASTXR HUB",
@@ -38,9 +36,7 @@ GUI:CreateMain({
     Config = { Enabled = false }
 })
 
--- =========================
--- HELPER: Notifications
--- =========================
+-- Helper: Small notifications
 local function notify(title, description)
     GUI:CreateNotify({title=title, description=description, Time=2})
 end
@@ -51,7 +47,7 @@ end
 local main = GUI:CreateTab("Player Enhancements", "home")
 GUI:CreateSection({ parent = main, text = "Movement & Navigation" })
 
--- Sprint
+-- Sprint Toggle
 GUI:CreateToggle({
     parent = main,
     text = "Enable Sprint",
@@ -117,11 +113,13 @@ GUI:CreateToggle({
     callback = function(state)
         flyEnabled = state
         if state then
+            -- Noclip
             noclipConnection = RunService.Stepped:Connect(function()
                 for _, part in pairs(char:GetDescendants()) do
                     if part:IsA("BasePart") then part.CanCollide = false end
                 end
             end)
+            -- Fly setup
             flyBV = Instance.new("BodyVelocity")
             flyBV.MaxForce = Vector3.new(1e5,1e5,1e5)
             flyBV.Velocity = Vector3.new(0,0,0)
@@ -148,7 +146,7 @@ GUI:CreateSlider({
     end
 })
 
--- Fly Controls
+-- Fly controls
 UIS.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Keyboard then
         if input.KeyCode == Enum.KeyCode.W then flyControls.W = true end
@@ -173,7 +171,7 @@ RunService.RenderStepped:Connect(function()
     if flyEnabled then updateFly() end
 end)
 
--- Teleport
+-- Teleport Example
 GUI:CreateButton({
     parent = main,
     text = "Teleport to Spawn",
@@ -239,12 +237,3 @@ GUI:CreateColorPicker({
         notify("Theme", "Text Updated")
     end
 })
-
--- =========================
--- CREDITS TAB
--- =========================
-local credits = GUI:CreateTab("Credits", "home")
-GUI:CreateSection({ parent = credits, text = "Author Info" })
-GUI:CreateParagraph({ parent = credits, text = "MASTXR HUB GUI" })
-GUI:CreateParagraph({ parent = credits, text = "Built and maintained by Sweb7xx" })
-GUI:CreateParagraph({ parent = credits, text = "Discord: @4503" })
